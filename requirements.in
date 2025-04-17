@@ -1,0 +1,5 @@
+fastapi==0.115.12
+uvicorn==0.34.1
+dotenv==0.9.9
+sqlalchemy==2.0.40
+asyncpg==0.30.0
