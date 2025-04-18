@@ -1,11 +1,8 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, DateTime, func
+from typing import Optional
+from datetime import datetime
+from sqlmodel import SQLModel, Field
 
-Base = declarative_base()
-
-class BaseModel(Base):
-    __abstract__ = True
-    
-    id = Column(Integer, primary_key=True, index=True)
-    created_at = Column(DateTime, default=func.now())
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+class BaseModel(SQLModel):
+    id: Optional[int] = Field(default=None, primary_key=True, index=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)

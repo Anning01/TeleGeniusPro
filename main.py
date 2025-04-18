@@ -4,10 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.api import api_router
 from app.core.config import settings
 from app.db.session import engine
-from app.models import base
+from sqlmodel import SQLModel
 
 # 创建数据库表
-base.Base.metadata.create_all(bind=engine)
+SQLModel.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

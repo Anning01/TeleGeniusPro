@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from sqlalchemy.orm import Session
+from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.db.session import get_db
+from app.db.session import get_async_session
 from app.services.script_service import run_script
 
 router = APIRouter()
@@ -12,7 +12,7 @@ async def execute_script(
     script_name: str,
     background_tasks: BackgroundTasks,
     params: dict = None,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_async_session)
 ):
     """
     执行指定的脚本
