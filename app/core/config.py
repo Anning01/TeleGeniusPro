@@ -1,10 +1,12 @@
+import logging
 import os
 import secrets
-from typing import Any, Dict, List, Optional, Union
-
-from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, field_validator
-import logging
 from pathlib import Path
+from typing import Any, List, Optional, Union
+
+from pydantic import AnyHttpUrl, PostgresDsn, field_validator
+from pydantic_core.core_schema import ValidationInfo
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -37,21 +39,22 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
-    POSTGRES_PORT: str = "5432"
+    POSTGRES_PORT: int = 5432
     SQLMODEL_DATABASE_URI: Optional[PostgresDsn] = None
 
     @field_validator("SQLMODEL_DATABASE_URI", mode="before")
-    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+    def assemble_db_connection(cls, v: Optional[str], info: ValidationInfo) -> Any:
         if isinstance(v, str):
             return v
         try:
+            data = info.data
             return PostgresDsn.build(
                 scheme="postgresql+asyncpg",
-                username=values.get("POSTGRES_USER"),
-                password=values.get("POSTGRES_PASSWORD"),
-                host=values.get("POSTGRES_SERVER"),
-                port=values.get("POSTGRES_PORT"),
-                path=f"/{values.get('POSTGRES_DB') or ''}",
+                username=data.get("POSTGRES_USER"),
+                password=data.get("POSTGRES_PASSWORD"),
+                host=data.get("POSTGRES_SERVER"),
+                port=data.get("POSTGRES_PORT"),
+                path=f"{data.get('POSTGRES_DB') or ''}",
             )
         except Exception as e:
             logging.error(f"数据库连接配置错误: {e}")

@@ -4,3 +4,4 @@ dotenv==0.9.9
 sqlalchemy==2.0.40
 sqlmodel==0.0.24
 asyncpg==0.30.0
+pydantic-settings==2.9.1
