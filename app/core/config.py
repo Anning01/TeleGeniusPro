@@ -104,7 +104,7 @@ class Settings(BaseSettings):
         case_sensitive = True
 
 
-# 检查.env文件是否存在
+# Check whether the.env file exists
 env_path = Path(".env")
 if not env_path.exists():
     raise FileNotFoundError(

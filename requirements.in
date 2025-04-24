@@ -8,3 +8,4 @@ pydantic-settings==2.9.1
 sse_starlette==2.2.1
 openai==1.75.0
 deepl==1.21.1
+faker==37.1.0

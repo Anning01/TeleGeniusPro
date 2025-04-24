@@ -3,6 +3,7 @@ import asyncio
 from dotenv import load_dotenv
 from fastapi import FastAPI, BackgroundTasks, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sse_starlette.sse import EventSourceResponse
 from fastapi.responses import HTMLResponse
@@ -76,12 +77,26 @@ async def events(user_id: str, background_tasks: BackgroundTasks):
 
 @app.get("/", response_class=HTMLResponse)
 async def root(
-    request: Request, user_id: str, session: AsyncSession = Depends(get_async_session)
+    request: Request,
+    user_id: str = None,
+    session: AsyncSession = Depends(get_async_session),
 ):
+    if not user_id:
+        # 获取所有用户列表
+        statement = await session.execute(select(User))
+        users = statement.scalars().all()
+        return templates.TemplateResponse(
+            "users.html", {"request": request, "users": users}
+        )
+
     user = await session.get(User, int(user_id))
     if not user:
-        return HTMLResponse(content="User not found", status_code=404)
-    history = await get_history(int(user_id))
+        # 如果用户不存在，重定向到用户列表页面
+        return templates.TemplateResponse(
+            "users.html", {"request": request, "users": []}
+        )
+
+    history = await get_history(int(user_id), is_read=True)
     return templates.TemplateResponse(
         "index.html", {"request": request, "user_id": user_id, "history": history}
     )

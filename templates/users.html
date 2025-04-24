@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>TeleGenius Pro Users</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" rel="stylesheet">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 0;
+        }
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #5f6368;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .users-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            position: relative;
+        }
+        .user-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 60px;
+        }
+        .user-card {
+            flex: 0 1 calc(33.333% - 20px);
+            min-width: 280px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .user-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .user-card .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .user-card .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        .user-meta {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .create-user-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .create-user-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-header">
+        <h1>TeleGenius Pro</h1>
+    </div>
+    <div class="users-container">
+        <button class="create-user-btn" onclick="createNewUser()">
+            <span class="mdi mdi-account-plus"></span>
+            创建新用户
+        </button>
+        <div class="user-list" id="userList">
+            {% for user in users %}
+            <div class="user-card" onclick="window.location.href='/?user_id={{ user.id }}'">
+                <div class="user-info">
+                    <div class="avatar">
+                        <span class="mdi mdi-account"></span>
+                    </div>
+                    <div>
+                        <div>{{ user.meta.nick_name }}</div>
+                        <small>ID: {{ user.id }}</small>
+                    </div>
+                </div>
+                <div class="user-meta">
+                    <div><strong>国家:</strong> {{ user.meta.country }}</div>
+                    <div><strong>用户名:</strong> {{ user.meta.username }}</div>
+                    <div><strong>手机:</strong> {{ user.meta.mobile_phone }}</div>
+                    {% for key, value in user.meta.items() %}
+                        {% if key not in ['nick_name', 'country', 'username', 'mobile_phone', 'user_id'] %}
+                            <div><strong>{{ key }}:</strong> {{ value }}</div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="createUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">创建新用户</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="userForm">
+                <div class="form-group">
+                    <label>用户ID</label>
+                    <input type="text" id="user_id" readonly>
+                </div>
+                <div class="form-group">
+                    <label>昵称</label>
+                    <input type="text" id="nick_name">
+                </div>
+                <div class="form-group">
+                    <label>手机号码</label>
+                    <input type="text" id="mobile_phone">
+                </div>
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="username">
+                </div>
+                <div class="form-group">
+                    <label>国家</label>
+                    <input type="text" id="country">
+                </div>
+                <div class="form-group">
+                    <label>姓氏</label>
+                    <input type="text" id="last_name">
+                </div>
+                <div class="form-group">
+                    <label>年龄</label>
+                    <input type="text" id="age">
+                </div>
+                <div class="form-group">
+                    <label>性别</label>
+                    <input type="text" id="gender">
+                </div>
+                <div class="form-group">
+                    <label>婚姻状况</label>
+                    <input type="text" id="interested">
+                </div>
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" id="email">
+                </div>
+                <div class="form-group">
+                    <label>爱好</label>
+                    <input type="text" id="hobbies">
+                </div>
+                <div class="form-group">
+                    <label>职业</label>
+                    <input type="text" id="job">
+                </div>
+                <div class="form-group">
+                    <label>收入</label>
+                    <input type="text" id="income">
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <input type="text" id="remark">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="generateFakeUser()">重新生成</button>
+                <button class="btn btn-primary" onclick="submitUserForm()">确认创建</button>
+                <button class="btn btn-danger" onclick="closeModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showModal() {
+            document.getElementById('createUserModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('createUserModal').style.display = 'none';
+        }
+
+        async function generateFakeUser() {
+            try {
+                const response = await fetch('/api/v1/users/faker');
+                if (response.ok) {
+                    const result = await response.json();
+                    const userData = result.data;
+                    
+                    // 填充表单数据
+                    Object.keys(userData).forEach(key => {
+                        const input = document.getElementById(key);
+                        if (input) {
+                            input.value = userData[key];
+                        }
+                    });
+                } else {
+                    alert('获取用户数据失败');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('获取用户数据失败');
+            }
+        }
+
+        async function createNewUser() {
+            showModal();
+            await generateFakeUser();
+        }
+
+        async function submitUserForm() {
+            try {
+                const formData = {
+                    user_id: document.getElementById('user_id').value,
+                    nick_name: document.getElementById('nick_name').value,
+                    mobile_phone: document.getElementById('mobile_phone').value,
+                    username: document.getElementById('username').value,
+                    country: document.getElementById('country').value,
+                    last_name: document.getElementById('last_name').value,
+                    age: document.getElementById('age').value,
+                    gender: document.getElementById('gender').value,
+                    interested: document.getElementById('interested').value,
+                    email: document.getElementById('email').value,
+                    hobbies: document.getElementById('hobbies').value,
+                    job: document.getElementById('job').value,
+                    income: document.getElementById('income').value,
+                    remark: document.getElementById('remark').value
+                };
+
+                const response = await fetch('/api/v1/users/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data: formData
+                    })
+                });
+                
+                if (response.ok) {
+                    closeModal();
+                    window.location.reload();
+                } else {
+                    alert('创建用户失败');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('创建用户失败');
+            }
+        }
+    </script>
+</body>
+</html>

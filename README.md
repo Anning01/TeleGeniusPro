@@ -41,17 +41,29 @@ TeleGenius Pro 是一款专为 Telegram 设计的智能用户管理工具，支�
 2. **配置文件**  
    项目路径下创建 `.env` 复制 `.env.example` 内容到 `.env`：  
    ```.env  
-   # 环境设置
+   # env config
    ENV=development
    
-   # PostgreSQL配置
+   # PostgreSQL config
    POSTGRES_SERVER=localhost
    POSTGRES_USER=postgres
    POSTGRES_PASSWORD=password
    POSTGRES_DB=telegenius
    POSTGRES_PORT=5432
    
-   # API配置
+   # deepl config
+   DEEPL_API_KEY=deepL api key
+   LANGUAGE=en-US
+   
+   # redis config
+   REDIS_HOST=localhost
+   REDIS_PORT=6379
+   REDIS_DB=0
+   REDIS_USER=default
+   REDIS_PASSWORD=password
+   
+   
+   # API config
    BACKEND_CORS_ORIGINS=["http://localhost:8000", "http://localhost:3000"]
    ```  
 

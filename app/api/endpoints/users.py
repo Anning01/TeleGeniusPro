@@ -18,11 +18,11 @@ router = APIRouter()
 @router.post("/")
 async def create_users(
     users: Union[UserDataValidator, List[UserDataValidator]],
-    background_tasks: BackgroundTasks,
+    background_tasks: BackgroundTasks = None,
     session: AsyncSession = Depends(get_async_session),
 ):
     """
-    创建用户
+    Create a user. If no user data is provided, generate it using faker
     """
     if not isinstance(users, list):
         users = [users]
@@ -90,3 +90,11 @@ async def receive_message(
     except Exception as e:
         await session.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/faker")
+def fake_user():
+    # Generate user data using faker
+    fake_data = UserDataValidator.generate_fake_user()
+    users = UserDataValidator(data=fake_data)
+    return users

@@ -1,4 +1,4 @@
-# 用户连接后，根据用户消息或者首次，给用户发送消息
+# After the user connects, a message is sent to the user based on the user's message or the first time
 from typing import Type
 
 from sqlmodel import select
@@ -9,11 +9,11 @@ from app.scripts.chat import Chat as ChatScript
 from app.scripts.producer import Producer
 
 
-async def get_history(user_id: int):
+async def get_history(user_id: int, is_read: bool = False):
     async with async_session_maker() as session:
         statement = (
             select(Chat.role, Chat.message)
-            .where(Chat.user_id == user_id)
+            .where(Chat.user_id == user_id, Chat.is_read == is_read)
             .order_by(Chat.id)
         )
         result = await session.execute(statement)
@@ -23,9 +23,9 @@ async def get_history(user_id: int):
         return chat_list
 
 
-async def save_chat(user_id: int, role: str, message: str):
+async def save_chat(user_id: int, role: str, message: str, is_read: bool = False):
     async with async_session_maker() as session:
-        chat = Chat(user_id=user_id, role=role, message=message)
+        chat = Chat(user_id=user_id, role=role, message=message, is_read=is_read)
         session.add(chat)
         await session.commit()
         await session.refresh(chat)
@@ -42,7 +42,7 @@ async def reply_message(user: Type[User] | None):
             }
         )
         await save_chat(
-            user.id, "system", "Ok. Now you start to say hello to the users."
+            user.id, "system", "Ok. Now you start to say hello to the users.", True
         )
     chat = ChatScript(history, user.meta)
     message = chat.chat_with_openai()
