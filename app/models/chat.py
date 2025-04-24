@@ -11,4 +11,3 @@ class Chat(BaseModel, table=True):
     is_read: bool = Field(default=False)
     message: str
     user: User | None = Relationship(back_populates="chat")
-

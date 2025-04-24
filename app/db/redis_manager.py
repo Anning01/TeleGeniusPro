@@ -16,12 +16,12 @@ class RedisManager:
     async def init_redis(self):
         if self._redis is None:
             self._redis = await redis.from_url(
-                settings.REDIS_URL,
+                str(settings.REDIS_URL),
                 encoding="utf-8",
                 decode_responses=True,
-                max_connections=400,  # 限制最大连接数
-                retry_on_timeout=True,  # 超时重试
-                health_check_interval=30,  # 健康检查间隔
+                max_connections=400,  # Limit the maximum number of connections
+                retry_on_timeout=True,  # Timeout retry
+                health_check_interval=30,  # Interval of health check-ups
             )
 
     async def close(self):
@@ -80,5 +80,6 @@ class RedisManager:
     async def pubsub(self):
         await self.init_redis()
         return self._redis.pubsub(ignore_subscribe_messages=True)
+
 
 redis_manager = RedisManager()

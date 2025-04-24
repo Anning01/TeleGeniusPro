@@ -1,8 +1,22 @@
 # prompt engineering
 
-def get_prompt(user_id, nick_name, mobile_phone, username, country, last_name=None, age=None, gender=None,
-               interested=None, email=None, hobbies=None,
-               job=None, income=None, remark=None):
+
+def get_prompt(
+    user_id,
+    nick_name,
+    mobile_phone,
+    username,
+    country,
+    last_name=None,
+    age=None,
+    gender=None,
+    interested=None,
+    email=None,
+    hobbies=None,
+    job=None,
+    income=None,
+    remark=None,
+):
     system_prompt = f"""
     # Role：Real Friend Simulator  
     

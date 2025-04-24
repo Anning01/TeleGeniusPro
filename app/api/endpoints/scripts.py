@@ -12,7 +12,7 @@ async def execute_script(
     script_name: str,
     background_tasks: BackgroundTasks,
     params: dict = None,
-    db: AsyncSession = Depends(get_async_session)
+    db: AsyncSession = Depends(get_async_session),
 ):
     """
     执行指定的脚本

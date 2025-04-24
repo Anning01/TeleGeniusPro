@@ -20,10 +20,18 @@ class Producer:
             print("订阅了")
             # 只有订阅了才发送
             async with async_session_maker() as session:
-                statement = select(Chat).where(Chat.user_id == int(user_id), Chat.is_read == False, Chat.role == 'assistant').order_by(Chat.id)
+                statement = (
+                    select(Chat)
+                    .where(
+                        Chat.user_id == int(user_id),
+                        Chat.is_read is False,
+                        Chat.role == "assistant",
+                    )
+                    .order_by(Chat.id)
+                )
                 result = await session.execute(statement)
                 chats = result.scalars().all()
-                print("-"*100)
+                print("-" * 100)
                 print(chats)
                 for chat in chats:
                     await self.produce(user_id, chat.message)
@@ -42,4 +50,3 @@ class Producer:
         result = await self.redis_client.pubsub_num_subs(channel)
         sub_count = result[0][1] if result else 0
         return True if sub_count > 0 else False
-

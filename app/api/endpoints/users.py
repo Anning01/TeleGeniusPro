@@ -15,11 +15,10 @@ from app.services.reply_message import reply_message
 router = APIRouter()
 
 
-
 @router.post("/")
 async def create_users(
     users: Union[UserDataValidator, List[UserDataValidator]],
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     """
     创建用户
@@ -31,16 +30,21 @@ async def create_users(
     for user in users:
         try:
             meta = user.data
-            user_id = int(meta['user_id'])
+            user_id = int(meta["user_id"])
             existing_user = await session.get(User, user_id)
             if existing_user:
-                raise HTTPException(status_code=400, detail=f"The user ID {user_id} already exists and cannot be created again.")
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"The user ID {user_id} already exists and cannot be created again.",
+                )
             user_obj = User(id=user_id, meta=meta)
             user_objects.append(user_obj)
         except ValidationError as e:
             raise HTTPException(status_code=400, detail=str(e))
         except KeyError:
-            raise HTTPException(status_code=400, detail="The meta must contain the user_id")
+            raise HTTPException(
+                status_code=400, detail="The meta must contain the user_id"
+            )
 
     try:
         for user_obj in user_objects:
@@ -57,7 +61,7 @@ async def receive_message(
     user_id: Annotated[int, Path(title="The ID of the User to get")],
     chat_base: ChatBase,
     background_tasks: BackgroundTasks,
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     """
     Receive the messages sent by users

@@ -25,16 +25,16 @@ app = FastAPI(
     version=settings.VERSION,
     docs_url=settings.API_V1_STR,
     redoc_url=f"{settings.API_V1_STR}/redoc",
-    openapi_url=f"{settings.API_V1_STR}/openapi.json"
+    openapi_url=f"{settings.API_V1_STR}/openapi.json",
 )
 
-# 挂载静态文件目录
+# Mount the static file directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# 配置模板目录
+# Configure the template directory
 templates = Jinja2Templates(directory="templates")
 
-# 设置CORS
+# setting CORS
 if settings.BACKEND_CORS_ORIGINS:
     app.add_middleware(
         CORSMiddleware,
@@ -44,7 +44,7 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-# 包含API路由
+# Include API routing
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 
@@ -53,14 +53,15 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 #     from app.db.session import init_db
 #     await init_db()
 
+
 async def event_generator(user_id):
     pubsub = await redis_manager.pubsub()
     await pubsub.subscribe(f"channel:{user_id}")
-    # 使用 pubsub.listen() 阻塞等待消息
+    # 使用 pubsub.listen() Block and wait for messages
     try:
         async for message in pubsub.listen():
-            if message and message['type'] == 'message':
-                yield message['data']
+            if message and message["type"] == "message":
+                yield message["data"]
     finally:
         await pubsub.unsubscribe(f"channel:{user_id}")
         await pubsub.close()
@@ -74,13 +75,16 @@ async def events(user_id: str, background_tasks: BackgroundTasks):
 
 
 @app.get("/", response_class=HTMLResponse)
-async def root(request: Request, user_id: str, session: AsyncSession = Depends(get_async_session)):
+async def root(
+    request: Request, user_id: str, session: AsyncSession = Depends(get_async_session)
+):
     user = await session.get(User, int(user_id))
     if not user:
         return HTMLResponse(content="User not found", status_code=404)
     history = await get_history(int(user_id))
-    return templates.TemplateResponse("index.html", {"request": request, "user_id": user_id, "history": history})
-
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "user_id": user_id, "history": history}
+    )
 
 
 @app.get("/translate")

@@ -48,7 +48,6 @@ class Translator:
                     text, source_lang=source_lang, target_lang=target_lang
                 )
 
-
                 return result
 
             except Exception as e:

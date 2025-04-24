@@ -10,6 +10,8 @@ from pydantic_core.core_schema import ValidationInfo
 from pydantic_settings import BaseSettings
 
 load_dotenv()
+
+
 class Settings(BaseSettings):
 
     API_V1_STR: str = "/api/v1"
@@ -49,13 +51,12 @@ class Settings(BaseSettings):
     LANGUAGE: str = os.getenv("LANGUAGE", "en-US")
 
     # # Redis config
-    REDIS_USER: str|None
-    REDIS_PASSWORD: str|None
+    REDIS_USER: str | None
+    REDIS_PASSWORD: str | None
     REDIS_HOST: str
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
     REDIS_URL: Optional[RedisDsn] = None
-
 
     @field_validator("REDIS_URL", mode="before")
     def assemble_redis_url(cls, v: Optional[str], info: ValidationInfo) -> Any:
@@ -73,9 +74,9 @@ class Settings(BaseSettings):
             )
         except Exception as e:
             logging.error(f"Redis Connection configuration error: {e}")
-            raise ValueError("Redis Connection configuration error，Please check the environment variables")
-
-
+            raise ValueError(
+                "Redis Connection configuration error，Please check the environment variables"
+            )
 
     @field_validator("SQLMODEL_DATABASE_URI", mode="before")
     def assemble_db_connection(cls, v: Optional[str], info: ValidationInfo) -> Any:
@@ -93,7 +94,9 @@ class Settings(BaseSettings):
             )
         except Exception as e:
             logging.error(f"The database connection configuration is incorrect: {e}")
-            raise ValueError("The database connection configuration is incorrect，Please check the environment variables")
+            raise ValueError(
+                "The database connection configuration is incorrect，Please check the environment variables"
+            )
 
     class Config:
         env_file = ".env"
@@ -104,6 +107,8 @@ class Settings(BaseSettings):
 # 检查.env文件是否存在
 env_path = Path(".env")
 if not env_path.exists():
-    raise FileNotFoundError(".env file was not found. Please create .env file and configure the necessary environment variables")
+    raise FileNotFoundError(
+        ".env file was not found. Please create .env file and configure the necessary environment variables"
+    )
 
 settings = Settings()
