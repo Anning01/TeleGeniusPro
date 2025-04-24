@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>TeleGenius Pro 聊天</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="chat-header">
+        <h1>TeleGenius Pro</h1>
+        <div class="user-info">
+            <span class="mdi mdi-account-circle"></span>
+            <span>{{ user_id }}</span>
+        </div>
+    </div>
+    <div id="chat-container">
+        <div id="messages">
+            {% for msg in history %}
+            <div class="message {{ 'sent' if msg.role == 'user' else 'received' }}">
+                <div class="avatar">
+                    <span class="mdi {{ 'mdi-account' if msg.role == 'user' else 'mdi-robot' if msg.role == 'assistant' else 'mdi-cog' }}"></span>
+                </div>
+                <div class="message-content">
+                    <span class="role">{{ '我' if msg.role == 'user' else 'AI助手' if msg.role == 'assistant' else '系统' }}</span>
+                    <div class="text">{{ msg.content }}</div>
+                    <button class="translate-button" onclick="translateMessage(this, `{{ msg.content }}`)"><span class="mdi mdi-translate">翻译</span></button>
+                    <div class="translation-bubble"></div>
+                    <button class="cancel-translation" onclick="cancelTranslation(this)" style="display: none;">取消翻译</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="输入消息..." required>
+            <button type="submit" class="send-button">
+                <span class="mdi mdi-send"></span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const userId = "{{ user_id }}";
+        const messagesDiv = document.getElementById("messages");
+        const messageForm = document.getElementById("message-form");
+        const messageInput = document.getElementById("message-input");
+
+        // 监听 SSE 事件
+        // 本地消息列表
+        let messagesList = [];
+
+        // 添加消息到列表并渲染
+        function addMessage(data) {
+            messagesList.push(data);
+            renderMessage(data);
+        }
+
+        // 渲染单条消息
+        function renderMessage(data) {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `message ${data.role === 'user' ? 'sent' : 'received'}`;
+            
+            const avatarDiv = document.createElement("div");
+            avatarDiv.className = "avatar";
+            const avatarIcon = document.createElement("span");
+            avatarIcon.className = `mdi ${data.role === 'user' ? 'mdi-account' : 'mdi-robot'}`;
+            avatarDiv.appendChild(avatarIcon);
+            
+            const contentDiv = document.createElement("div");
+            contentDiv.className = "message-content";
+            
+            const roleSpan = document.createElement("span");
+            roleSpan.className = "role";
+            roleSpan.textContent = data.role === 'user' ? '我' : 'AI助手';
+            
+            const textDiv = document.createElement("div");
+            textDiv.className = "text";
+            textDiv.textContent = data.role === 'user' ? data.message : data.message;
+            
+            // 创建翻译按钮
+            const translateButton = document.createElement("button");
+            translateButton.className = "translate-button";
+            translateButton.innerHTML = '<span class="mdi mdi-translate"></span>翻译';
+            
+            // 创建翻译气泡
+            const translationBubble = document.createElement("div");
+            translationBubble.className = "translation-bubble";
+            
+            // 创建取消翻译按钮
+            const cancelButton = document.createElement("button");
+            cancelButton.className = "cancel-translation";
+            cancelButton.textContent = "取消翻译";
+            cancelButton.style.display = "none";
+            
+            translateButton.onclick = function() {
+                const escapedMessage = textDiv.textContent.replace(/[\\"']/g, '\\$&');
+                translateMessage(this, escapedMessage);
+            };
+            
+            cancelButton.onclick = function() {
+                translationBubble.classList.remove("show");
+                cancelButton.style.display = "none";
+            };
+            
+            contentDiv.appendChild(roleSpan);
+            contentDiv.appendChild(textDiv);
+            contentDiv.appendChild(translateButton);
+            contentDiv.appendChild(translationBubble);
+            contentDiv.appendChild(cancelButton);
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        const eventSource = new EventSource(`/events?user_id=${userId}`);
+        eventSource.onmessage = (function(event) {
+            const data = JSON.parse(event.data);
+            // SSE接收到的消息直接作为AI助手消息处理
+            data.role = 'assistant';
+            addMessage(data);
+        });
+
+        eventSource.onerror = function() {
+            console.error("SSE 连接错误");
+            eventSource.close();
+        };
+
+        // 翻译消息
+        async function translateMessage(button, message) {
+            const contentDiv = button.parentElement;
+            const translationBubble = contentDiv.querySelector('.translation-bubble');
+            const cancelButton = contentDiv.querySelector('.cancel-translation');
+
+            try {
+                console.log('发送翻译请求:', message); // 添加日志
+                const encodedMessage = encodeURIComponent(message);
+                const response = await fetch(`/translate?message=${encodedMessage}`, {
+                    method: 'GET'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('翻译响应:', result); // 添加日志
+                
+                if (!result.error) {
+                    translationBubble.textContent = result.text;
+                    translationBubble.classList.add('show');
+                    cancelButton.style.display = 'inline-block';
+                } else {
+                    throw new Error(result.msg || '翻译失败');
+                }
+            } catch (error) {
+                console.error('翻译请求失败:', error); // 改进错误日志
+                translationBubble.textContent = '翻译失败：' + (error.message || '服务暂时不可用');
+                translationBubble.classList.add('show', 'error');
+                setTimeout(() => {
+                    translationBubble.classList.remove('show', 'error');
+                }, 3000);
+            }
+        }
+
+        // 取消翻译
+        function cancelTranslation(button) {
+            const contentDiv = button.parentElement;
+            const translationBubble = contentDiv.querySelector('.translation-bubble');
+            translationBubble.classList.remove('show');
+            button.style.display = 'none';
+        }
+
+        // 发送消息
+        messageForm.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const message = messageInput.value;
+            if (!message) return;
+
+            const response = await fetch(`/api/v1/users/${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            });
+
+            if (response.ok) {
+                // 添加用户消息到本地列表
+                addMessage({
+                    role: 'user',
+                    message: message
+                });
+                messageInput.value = "";
+            } else {
+                alert("发送消息失败");
+            }
+        });
+    </script>
+</body>
+</html>

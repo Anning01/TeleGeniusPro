@@ -6,7 +6,9 @@ from app.models.base import BaseModel
 
 
 class Chat(BaseModel, table=True):
-    user_id: Optional[int|None] = Field(default=None, foreign_key="user.id")
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    role: str = Field(default="user")
+    is_read: bool = Field(default=False)
     message: str
     user: User | None = Relationship(back_populates="chat")
 

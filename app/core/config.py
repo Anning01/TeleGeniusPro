@@ -4,12 +4,14 @@ import secrets
 from pathlib import Path
 from typing import Any, List, Optional, Union
 
-from pydantic import AnyHttpUrl, PostgresDsn, field_validator
+from dotenv import load_dotenv
+from pydantic import AnyHttpUrl, PostgresDsn, field_validator, RedisDsn
 from pydantic_core.core_schema import ValidationInfo
 from pydantic_settings import BaseSettings
 
-
+load_dotenv()
 class Settings(BaseSettings):
+
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
@@ -29,18 +31,51 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "TeleGenius Pro"
     PROJECT_DESCRIPTION: str = "TeleGenius Pro API"
     VERSION: str = "0.1.0"
-    
-    # 环境设置
+
+    # env config
     ENV: str = os.getenv("ENV", "development")
     DEBUG: bool = ENV == "development"
-    
-    # PostgreSQL配置
+
+    # PostgreSQL config
     POSTGRES_SERVER: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
     POSTGRES_PORT: int = 5432
     SQLMODEL_DATABASE_URI: Optional[PostgresDsn] = None
+
+    # deepl config
+    DEEPL_API_KEY: str = os.getenv("DEEPL_API_KEY")
+    LANGUAGE: str = os.getenv("LANGUAGE", "en-US")
+
+    # # Redis config
+    REDIS_USER: str|None
+    REDIS_PASSWORD: str|None
+    REDIS_HOST: str
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_URL: Optional[RedisDsn] = None
+
+
+    @field_validator("REDIS_URL", mode="before")
+    def assemble_redis_url(cls, v: Optional[str], info: ValidationInfo) -> Any:
+        if isinstance(v, str):
+            return v
+        try:
+            data = info.data
+            return RedisDsn.build(
+                scheme="redis",
+                username=data.get("REDIS_USER"),
+                password=data.get("REDIS_PASSWORD"),
+                host=data.get("REDIS_HOST"),
+                port=data.get("REDIS_PORT"),
+                path=f"{data.get('REDIS_DB') or ''}",
+            )
+        except Exception as e:
+            logging.error(f"Redis Connection configuration error: {e}")
+            raise ValueError("Redis Connection configuration error，Please check the environment variables")
+
+
 
     @field_validator("SQLMODEL_DATABASE_URI", mode="before")
     def assemble_db_connection(cls, v: Optional[str], info: ValidationInfo) -> Any:
@@ -57,8 +92,8 @@ class Settings(BaseSettings):
                 path=f"{data.get('POSTGRES_DB') or ''}",
             )
         except Exception as e:
-            logging.error(f"数据库连接配置错误: {e}")
-            raise ValueError("数据库连接配置错误，请检查环境变量")
+            logging.error(f"The database connection configuration is incorrect: {e}")
+            raise ValueError("The database connection configuration is incorrect，Please check the environment variables")
 
     class Config:
         env_file = ".env"
@@ -69,6 +104,6 @@ class Settings(BaseSettings):
 # 检查.env文件是否存在
 env_path = Path(".env")
 if not env_path.exists():
-    raise FileNotFoundError("未找到.env文件，请创建.env文件并配置必要的环境变量")
+    raise FileNotFoundError(".env file was not found. Please create .env file and configure the necessary environment variables")
 
 settings = Settings()

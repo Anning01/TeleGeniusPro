@@ -2,13 +2,19 @@
 import argparse
 import sys
 
-def main():
-    parser = argparse.ArgumentParser(description='Hello World Script')
-    parser.add_argument('--name', type=str, default='World', help='Name to greet')
-    args = parser.parse_args()
-    
-    print(f"Hello, {args.name}!")
-    return 0
+
+class Mian:
+    def __init__(self):
+        parser = argparse.ArgumentParser(description='Hello World Script')
+        parser.add_argument('--name', type=str, default='World', help='Name to greet')
+        parser.add_argument('--pass', type=str, default='World', help='Name to greet')
+        self.args = parser.parse_args()
+
+    def main(self):
+        print(self.args)
+
+        print(f"Hello, {self.args}!")
+        return 0
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(Mian().main())

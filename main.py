@@ -1,16 +1,38 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import asyncio
 
+from dotenv import load_dotenv
+from fastapi import FastAPI, BackgroundTasks, Request, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from sqlmodel.ext.asyncio.session import AsyncSession
+from sse_starlette.sse import EventSourceResponse
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from app.services.reply_message import get_history
 from app.api.api import api_router
 from app.core.config import settings
-from app.db.session import init_db
+from app.db.redis_manager import redis_manager
+from app.db.session import get_async_session
+from app.models import User
+from app.scripts.producer import Producer
+from app.services.translator import Translator
+
+load_dotenv()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
     version=settings.VERSION,
+    docs_url=settings.API_V1_STR,
+    redoc_url=f"{settings.API_V1_STR}/redoc",
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
+
+# 挂载静态文件目录
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# 配置模板目录
+templates = Jinja2Templates(directory="templates")
 
 # 设置CORS
 if settings.BACKEND_CORS_ORIGINS:
@@ -25,13 +47,47 @@ if settings.BACKEND_CORS_ORIGINS:
 # 包含API路由
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
+
 # @app.on_event("startup")
 # async def on_startup():
+#     from app.db.session import init_db
 #     await init_db()
 
-@app.get("/")
-async def root():
-    return {"message": f"Welcome to {settings.PROJECT_NAME}"}
+async def event_generator(user_id):
+    pubsub = await redis_manager.pubsub()
+    await pubsub.subscribe(f"channel:{user_id}")
+    # 使用 pubsub.listen() 阻塞等待消息
+    try:
+        async for message in pubsub.listen():
+            if message and message['type'] == 'message':
+                yield message['data']
+    finally:
+        await pubsub.unsubscribe(f"channel:{user_id}")
+        await pubsub.close()
+
+
+@app.get("/events")
+async def events(user_id: str, background_tasks: BackgroundTasks):
+    task = asyncio.create_task(Producer().send_message(user_id))
+    background_tasks.add_task(lambda: task)
+    return EventSourceResponse(event_generator(user_id))
+
+
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request, user_id: str, session: AsyncSession = Depends(get_async_session)):
+    user = await session.get(User, int(user_id))
+    if not user:
+        return HTMLResponse(content="User not found", status_code=404)
+    history = await get_history(int(user_id))
+    return templates.TemplateResponse("index.html", {"request": request, "user_id": user_id, "history": history})
+
+
+
+@app.get("/translate")
+async def translate(message: str):
+    result = Translator().translate(text=message, target_lang="zh")
+    return {"text": result.text}
+
 
 if __name__ == "__main__":
     import uvicorn
