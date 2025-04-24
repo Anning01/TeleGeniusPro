@@ -2,7 +2,7 @@ from typing import Dict
 from faker import Faker
 from pydantic import BaseModel, field_validator, Field
 
-fake = Faker(["zh_CN"])
+fake = Faker(["en-US"])
 
 
 class UserDataValidator(BaseModel):
