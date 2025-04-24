@@ -1,5 +1,7 @@
 import deepl
 
+from app.core.config import settings
+
 
 class Translator:
     """
@@ -14,10 +16,10 @@ class Translator:
         返回:
             TranslationKeys: 一个可用的 TranslationKeys 对象，如果没有可用密钥则返回 None
         """
-        return "5f8c9270-1ed4-421b-8319-114461964194:fx"
+        return settings.DEEPL_API_KEY
 
     def translate(
-        self, text: str, source_lang: str = None, target_lang: str = "zh"
+        self, text: str, source_lang: str = None, target_lang: str = settings.LANGUAGE
     ):
         """
         执行翻译操作，使用可用的密钥并自动切换。

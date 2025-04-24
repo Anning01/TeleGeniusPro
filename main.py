@@ -85,7 +85,7 @@ async def root(request: Request, user_id: str, session: AsyncSession = Depends(g
 
 @app.get("/translate")
 async def translate(message: str):
-    result = Translator().translate(text=message, target_lang="zh")
+    result = Translator().translate(text=message)
     return {"text": result.text}
 
 

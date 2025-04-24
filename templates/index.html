@@ -2,7 +2,8 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>TeleGenius Pro 聊天</title>
+    <title>TeleGenius Pro Chat</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="/static/style.css">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" rel="stylesheet">
 </head>
@@ -22,17 +23,17 @@
                     <span class="mdi {{ 'mdi-account' if msg.role == 'user' else 'mdi-robot' if msg.role == 'assistant' else 'mdi-cog' }}"></span>
                 </div>
                 <div class="message-content">
-                    <span class="role">{{ '我' if msg.role == 'user' else 'AI助手' if msg.role == 'assistant' else '系统' }}</span>
+                    <span class="role">{{ 'me' if msg.role == 'user' else 'AI agent' if msg.role == 'assistant' else 'system' }}</span>
                     <div class="text">{{ msg.content }}</div>
-                    <button class="translate-button" onclick="translateMessage(this, `{{ msg.content }}`)"><span class="mdi mdi-translate">翻译</span></button>
+                    <button class="translate-button" onclick="translateMessage(this, `{{ msg.content }}`)"><span class="mdi mdi-translate">Translation</span></button>
                     <div class="translation-bubble"></div>
-                    <button class="cancel-translation" onclick="cancelTranslation(this)" style="display: none;">取消翻译</button>
+                    <button class="cancel-translation" onclick="cancelTranslation(this)" style="display: none;">Cancel translation</button>
                 </div>
             </div>
             {% endfor %}
         </div>
         <form id="message-form">
-            <input type="text" id="message-input" placeholder="输入消息..." required>
+            <input type="text" id="message-input" placeholder="Input message..." required>
             <button type="submit" class="send-button">
                 <span class="mdi mdi-send"></span>
             </button>
@@ -71,7 +72,7 @@
             
             const roleSpan = document.createElement("span");
             roleSpan.className = "role";
-            roleSpan.textContent = data.role === 'user' ? '我' : 'AI助手';
+            roleSpan.textContent = data.role === 'user' ? 'me' : 'AI agent';
             
             const textDiv = document.createElement("div");
             textDiv.className = "text";
@@ -80,7 +81,7 @@
             // 创建翻译按钮
             const translateButton = document.createElement("button");
             translateButton.className = "translate-button";
-            translateButton.innerHTML = '<span class="mdi mdi-translate"></span>翻译';
+            translateButton.innerHTML = '<span class="mdi mdi-translate"></span>Translation';
             
             // 创建翻译气泡
             const translationBubble = document.createElement("div");
@@ -89,7 +90,7 @@
             // 创建取消翻译按钮
             const cancelButton = document.createElement("button");
             cancelButton.className = "cancel-translation";
-            cancelButton.textContent = "取消翻译";
+            cancelButton.textContent = "Cancel translation";
             cancelButton.style.display = "none";
             
             translateButton.onclick = function() {
@@ -123,7 +124,7 @@
         });
 
         eventSource.onerror = function() {
-            console.error("SSE 连接错误");
+            console.error("SSE Connection error");
             eventSource.close();
         };
 
@@ -134,7 +135,6 @@
             const cancelButton = contentDiv.querySelector('.cancel-translation');
 
             try {
-                console.log('发送翻译请求:', message); // 添加日志
                 const encodedMessage = encodeURIComponent(message);
                 const response = await fetch(`/translate?message=${encodedMessage}`, {
                     method: 'GET'
@@ -145,18 +145,16 @@
                 }
                 
                 const result = await response.json();
-                console.log('翻译响应:', result); // 添加日志
-                
+
                 if (!result.error) {
                     translationBubble.textContent = result.text;
                     translationBubble.classList.add('show');
                     cancelButton.style.display = 'inline-block';
                 } else {
-                    throw new Error(result.msg || '翻译失败');
+                    throw new Error(result.msg || 'Translation failure');
                 }
             } catch (error) {
-                console.error('翻译请求失败:', error); // 改进错误日志
-                translationBubble.textContent = '翻译失败：' + (error.message || '服务暂时不可用');
+                translationBubble.textContent = 'Translation failure：' + (error.message || 'The service is temporarily unavailable.');
                 translationBubble.classList.add('show', 'error');
                 setTimeout(() => {
                     translationBubble.classList.remove('show', 'error');
@@ -192,7 +190,7 @@
                 });
                 messageInput.value = "";
             } else {
-                alert("发送消息失败");
+                alert("Failed to send the message. Please try again.");
             }
         });
     </script>
