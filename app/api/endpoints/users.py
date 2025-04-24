@@ -18,6 +18,7 @@ router = APIRouter()
 @router.post("/")
 async def create_users(
     users: Union[UserDataValidator, List[UserDataValidator]],
+    background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_async_session),
 ):
     """
@@ -49,7 +50,12 @@ async def create_users(
     try:
         for user_obj in user_objects:
             session.add(user_obj)
-        await session.commit()
+            await session.commit()
+            await session.refresh(user_obj)
+
+            task = asyncio.create_task(reply_message(user_obj))
+            background_tasks.add_task(lambda: task)
+
         return [{"id": user.id, "meta": user.meta} for user in user_objects]
     except Exception as e:
         await session.rollback()
