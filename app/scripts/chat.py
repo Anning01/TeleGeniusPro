@@ -35,7 +35,7 @@ class Chat:
                 api_key="ollama",
                 # api_key="sk-WwaTeLS5QwO02nbvEKkyHNjtCWZdVsF9izgcbESBAhofSVOf",
                 # base_url="https://api.moonshot.cn/v1"
-                base_url="http://localhost:11434/v1",
+                base_url="http://192.168.1.81:11434/v1",
             )
             # 调用新版本的聊天完成 API
             response = client.chat.completions.create(
