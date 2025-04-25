@@ -17,6 +17,7 @@ class Chat:
     history = []
 
     def __init__(self, history: list, user_meta: dict):
+        self.history = []
         self.say({"role": "system", "content": get_prompt(**user_meta)})
         self.history += history
 

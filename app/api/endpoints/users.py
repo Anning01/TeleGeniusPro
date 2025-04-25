@@ -77,12 +77,12 @@ async def receive_message(
         user = await session.get(User, user_id)
         if not user:
             raise HTTPException(status_code=404, detail="The user was not found.")
-        chat = Chat(user_id=user.id, message=chat_base.message)
+        chat = Chat(user_id=user.id, message=chat_base.message, is_read=True)
         session.add(chat)
         await session.commit()
         await session.refresh(chat)
 
-        # 异步后台任务式调用 reply_message 函数，不影响主流程
+        # Calling the reply_message function in an asynchronous background task-style does not affect the main process
         task = asyncio.create_task(reply_message(user))
         background_tasks.add_task(lambda: task)
 

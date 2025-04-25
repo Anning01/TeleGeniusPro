@@ -9,7 +9,7 @@ from sse_starlette.sse import EventSourceResponse
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from app.services.reply_message import get_history
+from app.services.reply_message import get_history, reply_message
 from app.api.api import api_router
 from app.core.config import settings
 from app.db.redis_manager import redis_manager
@@ -97,6 +97,8 @@ async def root(
         )
 
     history = await get_history(int(user_id), is_read=True)
+    if not history:
+        await reply_message(user)
     return templates.TemplateResponse(
         "index.html", {"request": request, "user_id": user_id, "history": history}
     )

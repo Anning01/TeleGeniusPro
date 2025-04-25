@@ -29,8 +29,6 @@ class Producer:
                 )
                 result = await session.execute(statement)
                 chats = result.scalars().all()
-                print("-" * 100)
-                print(f"Message to be sent {''.join([chat.message for chat in chats])}")
                 for chat in chats:
                     await self.produce(user_id, chat.message)
                     chat.is_read = True
@@ -47,5 +45,4 @@ class Producer:
         channel = f"channel:{user_id}"
         result = await self.redis_client.pubsub_num_subs(channel)
         sub_count = result[0][1] if result else 0
-        print(f"The user {user_id} is subscriptions count {sub_count}")
         return True if sub_count > 0 else False

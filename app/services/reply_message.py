@@ -11,11 +11,18 @@ from app.scripts.producer import Producer
 
 async def get_history(user_id: int, is_read: bool = False):
     async with async_session_maker() as session:
-        statement = (
-            select(Chat.role, Chat.message)
-            .where(Chat.user_id == user_id, Chat.is_read == is_read)
-            .order_by(Chat.id)
-        )
+        if is_read:
+            statement = (
+                select(Chat.role, Chat.message)
+                .where(Chat.user_id == user_id, Chat.is_read == is_read)
+                .order_by(Chat.id)
+            )
+        else:
+            statement = (
+                select(Chat.role, Chat.message)
+                .where(Chat.user_id == user_id)
+                .order_by(Chat.id)
+            )
         result = await session.execute(statement)
         chats = result.fetchall()
         # Use the map higher-order function to convert tuples into lists
