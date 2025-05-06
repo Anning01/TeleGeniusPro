@@ -46,14 +46,40 @@
         const messageForm = document.getElementById("message-form");
         const messageInput = document.getElementById("message-input");
 
-        // 监听 SSE 事件
         // 本地消息列表
         let messagesList = [];
+        let eventSource = null;
 
         // 添加消息到列表并渲染
         function addMessage(data) {
             messagesList.push(data);
             renderMessage(data);
+        }
+
+        // 关闭SSE连接
+        function closeEventSource() {
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+                console.log('SSE connection closed');
+            }
+        }
+
+        // 初始化SSE连接
+        function initEventSource() {
+            closeEventSource(); // 确保之前的连接已关闭
+            eventSource = new EventSource(`/events?user_id=${userId}`);
+            
+            eventSource.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                data.role = 'assistant';
+                addMessage(data);
+            };
+
+            eventSource.onerror = function() {
+                console.error("SSE Connection error");
+                closeEventSource();
+            };
         }
 
         // 渲染单条消息
@@ -115,18 +141,21 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
-        const eventSource = new EventSource(`/events?user_id=${userId}`);
-        eventSource.onmessage = (function(event) {
-            const data = JSON.parse(event.data);
-            // SSE接收到的消息直接作为AI助手消息处理
-            data.role = 'assistant';
-            addMessage(data);
-        });
+        // 初始化SSE连接
+        initEventSource();
 
-        eventSource.onerror = function() {
-            console.error("SSE Connection error");
-            eventSource.close();
-        };
+        // 页面卸载时关闭SSE连接
+        window.addEventListener('beforeunload', closeEventSource);
+        window.addEventListener('unload', closeEventSource);
+
+        // 监听页面可见性变化
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                closeEventSource();
+            } else if (document.visibilityState === 'visible') {
+                initEventSource();
+            }
+        });
 
         // 翻译消息
         async function translateMessage(button, message) {
