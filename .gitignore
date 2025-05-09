@@ -10,3 +10,4 @@ node_modules
 .venv
 
 .app/prompts/test.py
+.app/prompts/docs/prompts_summary_*.txt
