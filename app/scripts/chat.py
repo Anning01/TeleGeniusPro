@@ -1,7 +1,9 @@
+import os
 import openai
 
-from app.prompts.base import get_prompt
 
+from app.prompts.base import get_prompt
+from app.prompts.core import PromptsBuilder
 
 class Chat:
     """
@@ -18,8 +20,37 @@ class Chat:
 
     def __init__(self, history: list, user_meta: dict):
         self.history = []
-        self.say({"role": "system", "content": get_prompt(**user_meta)})
+        self.user_meta = user_meta
+        self.user_id = user_meta.get('user_id', '')
+        
+        self.base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.product_info_path = os.path.join(self.base_dir, '../prompts/docs/dataset.txt')
+        self.product_summary_path = os.path.join(self.base_dir, f'../prompts/docs/product_summary_{self.user_id}.txt')
+        # init PromptsBuilder
+        self.prompts_builder = PromptsBuilder()
+        # init product summary
+        with open(self.product_info_path, 'r') as f:
+            self.product_info = f.read()
+        self.product_summary = self.prompts_builder.summarize_product(self.product_info)
+        with open(self.product_summary_path, 'w') as f:
+            f.write(self.product_summary)
+        # init role system prompt
+        self.role_prompt = self.prompts_builder.select_role_prompt(self.product_summary, user_meta)
+        # init final prompt
+        self.final_prompt = self.prompts_builder.build_dialog_prompt(
+            product_summary=self.product_summary,
+            user_info=self.user_meta,
+            role_system_prompt=self.role_prompt
+        )
+        print(self.final_prompt)
+
+        self.say({
+            "role": "system", 
+            # "content": get_prompt(**user_meta)
+            "content": self.final_prompt
+            })
         self.history += history
+        print(user_meta)
 
     def say(self, message):
         self.history.append(message)

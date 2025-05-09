@@ -1,0 +1,23 @@
+Product Name: ABC (PAN & Aadhaar Linking & Correction Service)
+
+2. Core functions:
+    1. PAN Card Application: Facilitates new PAN card applications for both resident and non-resident Indians.
+    2. PAN & Aadhaar Linking: Digitally links PAN and Aadhaar cards, addressing discrepancies in data.
+    3. PAN Card Correction: Enables updates to details on existing PAN cards, including citizenship status and address.
+
+3. Unique Selling Point: End-to-end digital service for PAN application, correction, and linking, specifically catering to NRIs without requiring a visit to India.
+
+4. Target Users/Scenarios:
+    * Non-Resident Indians (NRIs) needing a new PAN card or updates to existing details.
+    * Individuals requiring PAN-Aadhaar linking for financial transactions or compliance.
+    * Foreign citizens/OCI holders applying for a PAN card.
+
+5. Key technical parameters:
+    * Data Security: Utilizes secure online platforms (Razorpay) for payment processing and data transmission.
+    * Document Verification: Supports digital document submission (images of PAN, Aadhaar, passport, etc.).
+    * Payment Methods: Accepts international debit/credit cards, net banking, and digital wallets.
+
+6. ABC provides a fully digital solution for NRIs to obtain, correct, and link their PAN and Aadhaar cards, eliminating the need for physical presence in India and ensuring secure, efficient processing through online platforms and document verification.
+
+
+
