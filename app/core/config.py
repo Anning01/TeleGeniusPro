@@ -38,6 +38,11 @@ class Settings(BaseSettings):
     ENV: str = os.getenv("ENV", "development")
     DEBUG: bool = ENV == "development"
 
+    # product summary model
+    SUMMARY_API_KEY: str = os.getenv("SUMMARY_API_KEY")
+    SUMMARY_BASE_URL: str = os.getenv("SUMMARY_BASE_URL")
+    SUMMARY_MODEL: str = os.getenv("SUMMARY_MODEL")
+
     # PostgreSQL config
     POSTGRES_SERVER: str
     POSTGRES_USER: str

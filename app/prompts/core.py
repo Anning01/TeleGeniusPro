@@ -1,6 +1,7 @@
 import os
 import openai
 from typing import Dict, Optional
+from app.core.config import settings
 
 class PromptsBuilder:
     """
@@ -13,9 +14,9 @@ class PromptsBuilder:
             model: str = None
         ):
         
-        self.api_key = "ollama"
-        self.base_url = "http://192.168.1.81:11434/v1"
-        self.model = "gemma3:27b-it-q4_K_M"
+        self.api_key = api_key or settings.SUMMARY_API_KEY
+        self.base_url = base_url or settings.SUMMARY_BASE_URL
+        self.model = model or settings.SUMMARY_MODEL
 
     def summarize_product(
             self, 

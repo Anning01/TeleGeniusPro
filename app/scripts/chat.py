@@ -42,7 +42,7 @@ class Chat:
             user_info=self.user_meta,
             role_system_prompt=self.role_prompt
         )
-        print(self.final_prompt)
+        # print(self.final_prompt)
 
         self.say({
             "role": "system", 
@@ -50,7 +50,6 @@ class Chat:
             "content": self.final_prompt
             })
         self.history += history
-        print(user_meta)
 
     def say(self, message):
         self.history.append(message)
