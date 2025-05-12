@@ -63,6 +63,11 @@ class Settings(BaseSettings):
     REDIS_DB: int = 0
     REDIS_URL: Optional[RedisDsn] = None
 
+    # ragflow config
+    RAGFLOW_API_KEY: str = os.getenv("RAGFLOW_API_KEY")
+    RAGFLOW_BASE_URL: str = os.getenv("RAGFLOW_BASE_URL")
+    RAGFLOW_DATASET_ID: str = os.getenv("RAGFLOW_DATASET_ID")
+
     @field_validator("REDIS_URL", mode="before")
     def assemble_redis_url(cls, v: Optional[str], info: ValidationInfo) -> Any:
         if isinstance(v, str):
