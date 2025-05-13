@@ -43,6 +43,11 @@ class Settings(BaseSettings):
     SUMMARY_BASE_URL: str = os.getenv("SUMMARY_BASE_URL")
     SUMMARY_MODEL: str = os.getenv("SUMMARY_MODEL")
 
+    # RAGFLOW API CONFIG
+    RAGFLOW_API_KEY: str = os.getenv("RAGFLOW_API_KEY")
+    RAGFLOW_BASE_URL: str = os.getenv("RAGFLOW_BASE_URL")
+    RAGFLOW_DATASET_ID: str = os.getenv("RAGFLOW_DATASET_ID")
+
     # PostgreSQL config
     POSTGRES_SERVER: str
     POSTGRES_USER: str

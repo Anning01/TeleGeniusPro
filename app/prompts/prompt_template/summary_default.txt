@@ -1,0 +1,18 @@
+[instruction]:
+  As a professional product analyst, please generate a structured summary based on the following text, which should be precise, concise, and exclude secondary information.
+
+[context]: 
+  {product_info}
+
+[Required Output Format]: 
+  1. Product Name:
+  2. Core functions (no more than 3 items) :
+  3. Unique Selling Point :
+  4. Target Users/Scenarios:
+  5. Key technical parameters (if any) :
+  6. Summary (within 50 words) :
+
+[additional_requirements]:
+  Use objective statements and avoid subjective modifiers;
+  Technical terms should be accompanied by brief explanations;
+  Output the summary directly, and do not say anything else. 
