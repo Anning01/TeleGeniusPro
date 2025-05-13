@@ -9,5 +9,5 @@ node_modules
 
 .venv
 
-.test.ipynb
-.app/prompts/docs/product_summary_*.txt
+test.ipynb
+app/prompts/docs/product_summary_*.txt
