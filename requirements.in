@@ -9,3 +9,4 @@ sse_starlette==2.2.1
 openai==1.75.0
 deepl==1.21.1
 faker==37.1.0
+ragflow_sdk>=0.18.0

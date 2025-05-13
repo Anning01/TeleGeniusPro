@@ -1,4 +1,5 @@
 # After the user connects, a message is sent to the user based on the user's message or the first time
+import random
 from typing import Type
 
 from sqlmodel import select
@@ -42,17 +43,15 @@ async def save_chat(user_id: int, role: str, message: str, is_read: bool = False
 async def reply_message(user: Type[User] | None):
     history = await get_history(user.id)
     if not history:
-        history.append(
-            {
-                "role": "system",
-                "content": "Ok. Now you start to say hello to the users.",
-            }
-        )
+        # toDo 首次打招呼 推荐TG平台发送随机的表情包，暂未实现，随机调用hello or hi
+        message = random.choice(["Hello", "Hi"])
         await save_chat(
-            user.id, "system", "Ok. Now you start to say hello to the users.", True
+            user.id, "assistant", message, True
         )
-    chat = ChatScript(history, user.meta)
-    message = chat.chat_with_openai()
-    await save_chat(user.id, "assistant", message)
+    else:
+        chat = ChatScript(history, user.meta)
+        message = chat.chat_with_openai()
+        await save_chat(user.id, "assistant", message)
+
     # After returning the message, call the generator to publish it to redis
     await Producer().send_message(user.id)

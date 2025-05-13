@@ -16,11 +16,15 @@ anyio==4.9.0
     #   starlette
 asyncpg==0.30.0
     # via -r requirements.in
+beartype==0.18.5
+    # via ragflow-sdk
 certifi==2025.1.31
     # via
     #   httpcore
     #   httpx
     #   requests
+chardet==5.2.0
+    # via reportlab
 charset-normalizer==3.4.1
     # via requests
 click==8.1.8
@@ -28,6 +32,7 @@ click==8.1.8
 colorama==0.4.6
     # via
     #   click
+    #   pytest
     #   tqdm
 deepl==1.21.1
     # via -r requirements.in
@@ -35,6 +40,8 @@ distro==1.9.0
     # via openai
 dotenv==0.9.9
     # via -r requirements.in
+et-xmlfile==2.0.0
+    # via openpyxl
 faker==37.1.0
     # via -r requirements.in
 fastapi==0.115.12
@@ -54,10 +61,27 @@ idna==3.10
     #   anyio
     #   httpx
     #   requests
+iniconfig==2.1.0
+    # via pytest
 jiter==0.9.0
     # via openai
+lxml==5.4.0
+    # via
+    #   python-docx
+    #   python-pptx
 openai==1.75.0
     # via -r requirements.in
+openpyxl==3.1.5
+    # via ragflow-sdk
+packaging==25.0
+    # via pytest
+pillow==11.2.1
+    # via
+    #   python-pptx
+    #   ragflow-sdk
+    #   reportlab
+pluggy==1.5.0
+    # via pytest
 pydantic==2.11.3
     # via
     #   fastapi
@@ -68,12 +92,27 @@ pydantic-core==2.33.1
     # via pydantic
 pydantic-settings==2.9.1
     # via -r requirements.in
+pytest==8.3.5
+    # via ragflow-sdk
+python-docx==1.1.2
+    # via ragflow-sdk
 python-dotenv==1.1.0
     # via
     #   dotenv
     #   pydantic-settings
+python-pptx==1.0.2
+    # via ragflow-sdk
+ragflow-sdk==0.18.0
+    # via -r requirements.in
+reportlab==4.4.0
+    # via ragflow-sdk
 requests==2.32.3
-    # via deepl
+    # via
+    #   deepl
+    #   ragflow-sdk
+    #   requests-toolbelt
+requests-toolbelt==1.0.0
+    # via ragflow-sdk
 sniffio==1.3.1
     # via
     #   anyio
@@ -99,6 +138,8 @@ typing-extensions==4.13.2
     #   openai
     #   pydantic
     #   pydantic-core
+    #   python-docx
+    #   python-pptx
     #   sqlalchemy
     #   typing-inspection
 typing-inspection==0.4.0
@@ -111,3 +152,5 @@ urllib3==2.4.0
     # via requests
 uvicorn==0.34.1
     # via -r requirements.in
+xlsxwriter==3.2.3
+    # via python-pptx
