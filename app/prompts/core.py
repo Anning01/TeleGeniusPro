@@ -127,15 +127,9 @@ class PromptsBuilder:
         user_query: str,
         role_system_prompt: Optional[str] = None
     ):
-        rag_context = self.get_rag_context(query=user_query, top_k=3)
-        default_prompt = self.default_role_prompt(user_info, rag_context)
-        
-        if role_system_prompt:
-            role_system_prompt = f"{default_prompt}\n\n# Advanced Role Settings:\n{role_system_prompt}"
-        else:
-            role_system_prompt = default_prompt
-            
-        # user info
+        # role prompt
+        role_system_prompt = role_system_prompt or '\n'
+        # user info prompt
         user_info_str = "\n".join([
             f"- USER_ID: {user_info.get('user_id', '')}",
             f"- NICK_NAME: {user_info.get('nick_name', '')}",
@@ -152,25 +146,35 @@ class PromptsBuilder:
             f"- INCOME: {user_info.get('income', '')}",
             f"- REMARK: {user_info.get('remark', '')}"
         ])
-            
-        # final prompt
-        final_prompt = f"""{role_system_prompt}\n\n# User information:\n{user_info_str}\n\n# Product summary:\n{product_summary}
-        """
+        # rag prompt
+        rag_context = self.get_rag_context(query=user_query, top_k=3)
+        rag_context = rag_context or '\n'
+
+        final_prompt = self.default_role_prompt(
+            user_info = user_info,
+            role_system_prompt = role_system_prompt,
+            user_info_str = user_info_str,
+            product_summary = product_summary,
+            rag_context = rag_context
+            )
         return final_prompt
 
 
     @staticmethod
     def default_role_prompt(
         user_info: Dict[str, str],
+        role_system_prompt: str,
+        user_info_str: str,
+        product_summary: str,
         rag_context: str
         ) -> str:
         template_path = os.path.join(os.path.dirname(__file__), "prompt_template", "system_default.txt")
         with open(template_path, "r", encoding="utf-8") as f:
             template = f.read()
-        # keys = ["user_id", "nick_name", "mobile_phone", "username", "country", "last_name", "age", "gender", "interested", "email", "hobbies", "job", "income", "remark"]
-        # for k in keys:
-        #     user_info.setdefault(k, "")
         format_dict = dict(user_info)
-        format_dict["rag_context"] = rag_context
+        format_dict['role_system_prompt'] = role_system_prompt
+        format_dict['user_info_str'] = user_info_str
+        format_dict['product_summary'] = product_summary
+        format_dict['rag_context'] = rag_context
         return template.format(**format_dict)
         
