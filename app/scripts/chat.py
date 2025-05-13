@@ -29,10 +29,10 @@ class Chat:
         # init PromptsBuilder
         self.prompts_builder = PromptsBuilder()
         # init product summary
-        with open(self.product_info_path, 'r') as f:
+        with open(self.product_info_path, 'r', encoding="utf-8") as f:
             self.product_info = f.read()
         self.product_summary = self.prompts_builder.summarize_product(self.product_info)
-        with open(self.product_summary_path, 'w') as f:
+        with open(self.product_summary_path, 'w', encoding="utf-8") as f:
             f.write(self.product_summary)
         # init role system prompt
         self.role_prompt = self.prompts_builder.select_role_prompt(self.product_summary, user_meta)
