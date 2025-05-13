@@ -1,6 +1,0 @@
-1. Product Name: ABC PAN Card & Aadhaar Services
-2. Core functions: PAN card application & correction, Aadhaar-PAN linking, Citizenship update on PAN card.
-3. Unique Selling Point: Digital assistance for PAN & Aadhaar services specifically tailored for NRIs, including overseas document acceptance & delivery.
-4. Target Users/Scenarios: Non-Resident Indians (NRIs) requiring PAN card application, correction, linking with Aadhaar, or citizenship status updates on their PAN card; Individuals seeking remote processing without needing to visit India.
-5. Key technical parameters: Secure online document upload; Digital payment processing (credit/debit cards, net banking); Data encryption for secure transmission of Personally Identifiable Information (PII).
-6. ABC provides a digital platform for NRIs to manage PAN card related services, including applications, corrections, Aadhaar linking, and citizenship updates, offering convenience and remote processing with secure online payments and document submission.
