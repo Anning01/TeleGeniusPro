@@ -1,5 +1,6 @@
 import os
 import openai
+from ragflow_sdk import RAGFlow
 from typing import Dict, Optional
 from app.core.config import settings
 
@@ -9,50 +10,69 @@ class PromptsBuilder:
     """
     def __init__(
             self, 
-            api_key: str = None, 
-            base_url: str = None, 
-            model: str = None
+            summary_api_key: str = None, 
+            summary_base_url: str = None, 
+            summary_model: str = None,
+            ragflow_api_key : str = None,
+            ragflow_base_url : str = None,
+            ragflow_dataset_id : str = None
         ):
-        
-        self.api_key = api_key or settings.SUMMARY_API_KEY
-        self.base_url = base_url or settings.SUMMARY_BASE_URL
-        self.model = model or settings.SUMMARY_MODEL
+        # api key for summary product info
+        self.summary_api_key = summary_api_key or settings.SUMMARY_API_KEY
+        self.summary_base_url = summary_base_url or settings.SUMMARY_BASE_URL
+        self.summary_model = summary_model or settings.SUMMARY_MODEL
+        # api key for get {rag_context} from ragflow
+        self.ragflow_api_key = ragflow_api_key or settings.RAGFLOW_API_KEY
+        self.ragflow_base_url = ragflow_base_url or settings.RAGFLOW_BASE_URL
+        self.ragflow_dataset_id = ragflow_dataset_id or settings.RAGFLOW_DATASET_ID
+
+        #init ragflow
+        self.ragflow = RAGFlow(api_key=self.ragflow_api_key, base_url=self.ragflow_base_url)
 
     def summarize_product(
             self, 
             product_info: str,  
             temperature: float = 0.7
         ):
-        
-        prompt = f"""
-        Instruction: As a professional product analyst, please generate a structured summary based on the following text, which should be precise, concise, and exclude secondary information.
-        Context:
-        {product_info}
-        Required Output Format:
-        Product Name:
-        2. Core functions (no more than 3 items) :
-        3. Unique Selling Point :
-        4. Target Users/Scenarios:
-        5. Key technical parameters (if any) :
-        6. Summary (within 50 words) :
-
-        Additional requirements:
-        - Use objective statements and avoid subjective modifiers;
-        Technical terms should be accompanied by brief explanations;
-        Output the summary directly, and do not say anything else.    
-        """
+        template_path = os.path.join(os.path.dirname(__file__), "prompt_template", "summary_default.txt")
+        with open(template_path, "r", encoding="utf-8") as f:
+            summary_prompt = f.read()
+        summary_prompt = summary_prompt.format(product_info=product_info)
 
         client = openai.OpenAI(
-            api_key=self.api_key,
-            base_url=self.base_url,
+            api_key=self.summary_api_key,
+            base_url=self.summary_base_url,
         )
         try:
             response = client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
+                model=self.summary_model,
+                messages=[{"role": "user", "content": summary_prompt}],
                 temperature=temperature
             )
             return response.choices[0].message.content
+        except Exception as e:
+            raise e
+
+    def get_rag_context(
+            self,
+            query: str,
+            top_k: int = 5
+        ):
+        try:
+            chunks = self.ragflow.retrieve(
+                question=query,
+                dataset_ids=[self.ragflow_dataset_id],
+                document_ids=None,
+                page=1,
+                page_size=top_k,
+                similarity_threshold=0.5,
+                vector_similarity_weight=0.4,
+                top_k=top_k,
+                keyword=True
+                )
+            
+            rag_context = "\n".join([c.content for c in chunks])
+            return rag_context
         except Exception as e:
             raise e
 
@@ -104,10 +124,11 @@ class PromptsBuilder:
         self,
         product_summary: str,
         user_info: Dict[str, str],
+        user_query: str,
         role_system_prompt: Optional[str] = None
     ):
-        
-        default_prompt = self.default_role_prompt(user_info)
+        rag_context = self.get_rag_context(query=user_query, top_k=3)
+        default_prompt = self.default_role_prompt(user_info, rag_context)
         
         if role_system_prompt:
             role_system_prompt = f"{default_prompt}\n\n# Advanced Role Settings:\n{role_system_prompt}"
@@ -139,11 +160,17 @@ class PromptsBuilder:
 
 
     @staticmethod
-    def default_role_prompt(user_info: Dict[str, str]) -> str:
+    def default_role_prompt(
+        user_info: Dict[str, str],
+        rag_context: str
+        ) -> str:
         template_path = os.path.join(os.path.dirname(__file__), "prompt_template", "system_default.txt")
         with open(template_path, "r", encoding="utf-8") as f:
             template = f.read()
         # keys = ["user_id", "nick_name", "mobile_phone", "username", "country", "last_name", "age", "gender", "interested", "email", "hobbies", "job", "income", "remark"]
         # for k in keys:
         #     user_info.setdefault(k, "")
-        return template.format(**user_info)
+        format_dict = dict(user_info)
+        format_dict["rag_context"] = rag_context
+        return template.format(**format_dict)
+        

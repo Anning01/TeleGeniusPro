@@ -40,6 +40,7 @@ class Chat:
         self.final_prompt = self.prompts_builder.build_dialog_prompt(
             product_summary=self.product_summary,
             user_info=self.user_meta,
+            user_query= history[-1]['content'],
             role_system_prompt=self.role_prompt
         )
         # print(self.final_prompt)
