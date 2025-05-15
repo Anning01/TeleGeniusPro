@@ -31,7 +31,7 @@ dataset_id = get_env_list("RAGFLOW_DATASET_ID")
 @router.post("/retrieve/")
 async def retrieve_chunks(query: QueryRequest):
     try:
-        print("请求参数：", query)
+        print("Requests：", query)
         chunks = rag.retrieve(
             question=query.question,
             dataset_ids=dataset_id,
@@ -55,4 +55,4 @@ async def retrieve_chunks(query: QueryRequest):
 
     except Exception as e:
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"查询失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Faild: {str(e)}")
