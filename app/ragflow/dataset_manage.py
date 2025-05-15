@@ -38,7 +38,7 @@ async def create_dataset(req: DatasetCreateRequest):
 async def delete_datasets(
     ids: Optional[List[str]] = Query(
         None,
-        description="要删除的数据集ID，多个重复此参数"
+        description="Repeat Dataset delete ID"
     )
 ):
     rag = get_rag()
