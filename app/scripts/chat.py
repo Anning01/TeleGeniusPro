@@ -17,6 +17,9 @@ class Chat:
     """
 
     history = []
+    product_info = None
+    product_summary = None
+    role_prompt = None
 
     def __init__(self, history: list, user_meta: dict):
         self.history = []
@@ -30,22 +33,25 @@ class Chat:
         # init PromptsBuilder
         self.prompts_builder = PromptsBuilder()
         # init product summary
-        with open(self.product_info_path, 'r', encoding="utf-8") as f:
-            self.product_info = f.read()
-        self.product_summary = self.prompts_builder.summarize_product(self.product_info)
-        with open(self.product_summary_path, 'w', encoding="utf-8") as f:
-            f.write(self.product_summary)
+        if Chat.product_info is None:
+            with open(self.product_info_path, 'r', encoding="utf-8") as f:
+                Chat.product_info = f.read()
+        if Chat.product_summary is None:
+            Chat.product_summary = self.prompts_builder.summarize_product(Chat.product_info)
+            with open(self.product_summary_path, 'w', encoding="utf-8") as f:
+                f.write(Chat.product_summary)
         # init role system prompt
         # TODO: 前端获取自定义角色性格提示词
-        self.role_prompt = self.prompts_builder.select_role_prompt()
+        if Chat.role_prompt is None:
+            Chat.role_prompt = self.prompts_builder.select_role_prompt()
         # init final prompt
         self.final_prompt = self.prompts_builder.build_dialog_prompt(
-            product_summary=self.product_summary,
+            product_summary=Chat.product_summary,
             user_info=self.user_meta,
             user_query= history[-1]['content'],
-            role_system_prompt=self.role_prompt
+            role_system_prompt=Chat.role_prompt
         )
-        # print(self.final_prompt)
+        print(self.final_prompt)
 
         self.say({
             "role": "system", 
