@@ -76,49 +76,28 @@ class PromptsBuilder:
         except Exception as e:
             raise e
 
+    def get_all_roles_list(self):
+        roles_dir = os.path.join(os.path.dirname(__file__), "prompt_template", "roles")
+        roles_list= []
+        for filename in os.listdir(roles_dir):
+            if filename.endswith('.txt'):
+                role_name = filename[:-4]
+                roles_list.append(role_name)
+        return roles_list
+
     def select_role_prompt(
         self,
-        product_summary,
-        user_info,
+        role_name=None
     ):
-        """
-        user_info:
-        # user_id,
-        # nick_name,
-        # mobile_phone,
-        # username,
-        # country,
-        # last_name=None,
-        # age=None,
-        # gender=None,
-        # interested=None,
-        # email=None,
-        # hobbies=None,
-        # job=None,
-        # income=None,
-        # remark=None
-        """
+        if not role_name:
+            role_name = 'default'
+        role_prompt_path = os.path.join(os.path.dirname(__file__), "prompt_template", "roles", f"{role_name}.txt")
+        if os.path.exists(role_prompt_path):
+            with open(role_prompt_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        else:
+            return "You are a person with a neutral personality."
 
-        # teenage
-        if int(user_info.get('age', '')) < 18:
-            return "You are a youthful and energetic product recommender, good at communicating with teenagers in youthful language, and enjoy expressing yourself with popular words and humor."
-        # high income
-        if int(user_info.get('income', '')) > 20000:
-            return "You are a professional high-end product consultant, good at communicating with high-income users in professional terms, and pay attention to product performance and quality."
-        # female
-        if user_info.get('gender', '') == "female":
-            return "You are a gentle and meticulous best friend type of consultant, good at understanding the needs of female users, and pay attention to emotional resonance and quality of life."
-        # hobbies==sport
-        if "sports" in user_info.get('hobbies', ''):
-            return "You are a health and lifestyle expert who loves sports. You are good at communicating with users in positive language and recommending products suitable for sports scenarios."
-        # IT
-        if "engineer" in user_info.get('job', '').lower() or "developer" in user_info.get('job', '').lower() or "IT" in user_info.get('job', ''):
-            return "You are a product expert who understands technology and can introduce the technical highlights of the product in a professional yet accessible way."
-        # single user
-        if user_info.get('interested', '') == "single":
-            return "You are a considerate life consultant, good at recommending products that enhance the quality of life for single users."
-        # default
-        return None 
 
     def build_dialog_prompt(
         self,

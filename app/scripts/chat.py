@@ -20,6 +20,7 @@ class Chat:
 
     def __init__(self, history: list, user_meta: dict):
         self.history = []
+        # TODO self.chat_rounds = int(len(history//2))
         self.user_meta = user_meta
         self.user_id = user_meta.get('user_id', '')
         
@@ -35,7 +36,8 @@ class Chat:
         with open(self.product_summary_path, 'w', encoding="utf-8") as f:
             f.write(self.product_summary)
         # init role system prompt
-        self.role_prompt = self.prompts_builder.select_role_prompt(self.product_summary, user_meta)
+        # TODO: 前端获取自定义角色性格提示词
+        self.role_prompt = self.prompts_builder.select_role_prompt()
         # init final prompt
         self.final_prompt = self.prompts_builder.build_dialog_prompt(
             product_summary=self.product_summary,
