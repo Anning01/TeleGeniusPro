@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import users, scripts, roles
+from app.api.endpoints import users, scripts, roles, overview
 from app.ragflow import pan_card_dataset
 from app.ragflow import dataset_manage
 from app.ragflow import dataset_documents
@@ -18,3 +18,4 @@ api_router.include_router(dataset_documents.router, prefix="/ragflow", tags=["ra
 
 # get role_prompts
 api_router.include_router(roles.router, prefix="/roles", tags=["roles"])
+api_router.include_router(overview.router, prefix="/overview", tags=["overview"])

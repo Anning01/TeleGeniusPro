@@ -51,7 +51,7 @@ class Chat:
             user_query= history[-1]['content'],
             role_system_prompt=Chat.role_prompt
         )
-        print(self.final_prompt)
+        # print(self.final_prompt)
 
         self.say({
             "role": "system", 
