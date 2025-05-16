@@ -17,6 +17,7 @@ from app.db.session import get_async_session
 from app.models import User
 from app.scripts.producer import Producer
 from app.services.translator import Translator
+from app.api.endpoints.overview import overview_summary, overview_trend
 
 load_dotenv()
 
@@ -108,6 +109,18 @@ async def root(
 async def translate(message: str):
     result = Translator().translate(text=message)
     return {"text": result.text}
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request, session: AsyncSession = Depends(get_async_session)):
+    # 获取 summary 数据
+    summary = await overview_summary(session)
+    # 获取 trend 数据（月为默认）
+    trend = await overview_trend(session)
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {"request": request, "summary": summary, "trend": trend}
+    )
 
 
 if __name__ == "__main__":

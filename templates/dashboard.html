@@ -71,8 +71,8 @@
                     </div>
                 </div>
                 <div class="mt-4 flex items-center">
-                    <span class="text-secondary text-sm font-medium flex items-center">
-                        <i class="fa-solid fa-arrow-up mr-1"></i> 12.5%
+                    <span class="text-secondary text-sm font-medium flex items-center" id="mom_total_users">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 0.0%
                     </span>
                     <span class="text-gray-400 text-sm ml-2">较上月</span>
                 </div>
@@ -90,8 +90,8 @@
                     </div>
                 </div>
                 <div class="mt-4 flex items-center">
-                    <span class="text-secondary text-sm font-medium flex items-center">
-                        <i class="fa-solid fa-arrow-up mr-1"></i> 8.2%
+                    <span class="text-secondary text-sm font-medium flex items-center" id="mom_total_chats">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 0.0%
                     </span>
                     <span class="text-gray-400 text-sm ml-2">较上月</span>
                 </div>
@@ -109,8 +109,8 @@
                     </div>
                 </div>
                 <div class="mt-4 flex items-center">
-                    <span class="text-secondary text-sm font-medium flex items-center">
-                        <i class="fa-solid fa-arrow-up mr-1"></i> 15.3%
+                    <span class="text-secondary text-sm font-medium flex items-center" id="mom_ai_replies">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 0.0%
                     </span>
                     <span class="text-gray-400 text-sm ml-2">较上月</span>
                 </div>
@@ -128,8 +128,8 @@
                     </div>
                 </div>
                 <div class="mt-4 flex items-center">
-                    <span class="text-secondary text-sm font-medium flex items-center">
-                        <i class="fa-solid fa-arrow-up mr-1"></i> 23.1%
+                    <span class="text-secondary text-sm font-medium flex items-center" id="mom_active_users">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 0.0%
                     </span>
                     <span class="text-gray-400 text-sm ml-2">较上月</span>
                 </div>
@@ -147,8 +147,8 @@
                     </div>
                 </div>
                 <div class="mt-4 flex items-center">
-                    <span class="text-secondary text-sm font-medium flex items-center">
-                        <i class="fa-solid fa-arrow-up mr-1"></i> 18.7%
+                    <span class="text-secondary text-sm font-medium flex items-center" id="mom_received_users">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 0.0%
                     </span>
                     <span class="text-gray-400 text-sm ml-2">较上月</span>
                 </div>
@@ -166,8 +166,8 @@
                     </div>
                 </div>
                 <div class="mt-4 flex items-center">
-                    <span class="text-secondary text-sm font-medium flex items-center">
-                        <i class="fa-solid fa-arrow-up mr-1"></i> 10.4%
+                    <span class="text-secondary text-sm font-medium flex items-center" id="mom_purchase_users">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 0.0%
                     </span>
                     <span class="text-gray-400 text-sm ml-2">较上月</span>
                 </div>
@@ -182,8 +182,8 @@
                     <h2 class="text-xl font-bold">使用率统计</h2>
                     <div class="flex space-x-2" id="usageChartPeriod">
                         <button class="period-btn px-3 py-1 text-sm bg-primary text-white rounded-lg" data-period="day">日</button>
-                        <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="week">周</button>
                         <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="month">月</button>
+                        <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="year">年</button>
                     </div>
                 </div>
                 <div class="h-80">
@@ -197,8 +197,8 @@
                     <h2 class="text-xl font-bold">用户转化率</h2>
                     <div class="flex space-x-2" id="conversionChartPeriod">
                         <button class="period-btn px-3 py-1 text-sm bg-primary text-white rounded-lg" data-period="day">日</button>
-                        <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="week">周</button>
                         <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="month">月</button>
+                        <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="year">年</button>
                     </div>
                 </div>
                 <div class="h-80">
@@ -211,7 +211,7 @@
         <div class="bg-white rounded-xl shadow-card p-6">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold">详细数据指标</h2>
-                <button class="px-4 py-2 bg-primary text-white rounded-lg flex items-center card-transition hover:bg-primary/90">
+                <button id="export-btn" class="px-4 py-2 bg-primary text-white rounded-lg flex items-center card-transition hover:bg-primary/90">
                     <i class="fa-solid fa-download mr-2"></i>导出数据
                 </button>
             </div>
@@ -240,7 +240,7 @@
                                 <div class="text-sm font-medium text-gray-900" id="read_rate">0%</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 5.2%</span>
+                                <span class="text-secondary flex items-center" id="mom_read_rate"><i class="fa-solid fa-arrow-up mr-1"></i> 0.0%</span>
                             </td>
                         </tr>
                         <tr>
@@ -258,7 +258,7 @@
                                 <div class="text-sm font-medium text-gray-900" id="active_user_rate">0%</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 3.7%</span>
+                                <span class="text-secondary flex items-center" id="mom_active_user_rate"><i class="fa-solid fa-arrow-up mr-1"></i> 0.0%</span>
                             </td>
                         </tr>
                         <tr>
@@ -276,7 +276,7 @@
                                 <div class="text-sm font-medium text-gray-900" id="received_active_rate">0%</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 2.1%</span>
+                                <span class="text-secondary flex items-center" id="mom_received_active_rate"><i class="fa-solid fa-arrow-up mr-1"></i> 0.0%</span>
                             </td>
                         </tr>
                         <tr>
@@ -294,7 +294,7 @@
                                 <div class="text-sm font-medium text-gray-900" id="ai_reply_rate">0%</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 4.3%</span>
+                                <span class="text-secondary flex items-center" id="mom_ai_reply_rate"><i class="fa-solid fa-arrow-up mr-1"></i> 0.0%</span>
                             </td>
                         </tr>
                         <tr>
@@ -312,7 +312,7 @@
                                 <div class="text-sm font-medium text-gray-900" id="avg_chat_per_active_user">0</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 1.8</span>
+                                <span class="text-secondary flex items-center" id="mom_avg_chat_per_active_user"><i class="fa-solid fa-arrow-up mr-1"></i> 0.0</span>
                             </td>
                         </tr>
                         <tr>
@@ -330,7 +330,7 @@
                                 <div class="text-sm font-medium text-gray-900" id="purchase_user_rate">0%</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 2.5%</span>
+                                <span class="text-secondary flex items-center" id="mom_purchase_user_rate"><i class="fa-solid fa-arrow-up mr-1"></i> 0.0%</span>
                             </td>
                         </tr>
                         <tr>
@@ -348,7 +348,7 @@
                                 <div class="text-sm font-medium text-gray-900" id="purchase_active_rate">0%</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 3.2%</span>
+                                <span class="text-secondary flex items-center" id="mom_purchase_active_rate"><i class="fa-solid fa-arrow-up mr-1"></i> 0.0%</span>
                             </td>
                         </tr>
                     </tbody>
@@ -358,144 +358,66 @@
     </div>
 
     <script>
-        // 模拟数据
-        const data = {
-            total_users: 12543,
-            total_chats: 56892,
-            ai_replies: 42567,
-            active_users: 3245,
-            received_users: 2856,
-            purchase_users: 1254,
-            read_rate: 0.875,
-            active_user_rate: 0.259,
-            received_active_rate: 0.88,
-            ai_reply_rate: 0.748,
-            avg_chat_per_active_user: 17.53,
-            purchase_user_rate: 0.10,
-            purchase_active_rate: 0.386
-        };
-
-        // 图表数据
-        const chartData = {
-            usage: {
-                day: {
-                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-                    datasets: [
-                        {
-                            label: '活跃用户数',
-                            data: [850, 720, 1500, 2100, 1800, 2500],
-                            borderColor: '#165DFF',
-                            backgroundColor: 'rgba(22, 93, 255, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: '消息数',
-                            data: [1200, 950, 3200, 4500, 3800, 4200],
-                            borderColor: '#FFAB00',
-                            backgroundColor: 'rgba(255, 171, 0, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }
-                    ]
+        // 后端传递的数据
+        const data = {{ summary | tojson | safe }};
+        let chartData = {{ trend | tojson | safe }};
+        
+        // 创建适配器函数，将后端数据转换为图表格式
+        function convertTrendToChartData(trendData, period = 'month') {
+            const labels = trendData.x || [];
+            const totalUsers = trendData.total_users || [];
+            const activeUsers = trendData.active_users || [];
+            const activeUserRate = trendData.active_user_rate || [];
+            const purchaseUserRate = trendData.purchase_user_rate || [];
+            
+            return {
+                usage: {
+                    [period]: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: '总用户数',
+                                data: totalUsers,
+                                borderColor: '#165DFF',
+                                backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: '活跃用户数',
+                                data: activeUsers,
+                                borderColor: '#FFAB00',
+                                backgroundColor: 'rgba(255, 171, 0, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }
+                        ]
+                    }
                 },
-                week: {
-                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-                    datasets: [
-                        {
-                            label: '活跃用户数',
-                            data: [2100, 2350, 2500, 2800, 3050, 2400, 1800],
-                            borderColor: '#165DFF',
-                            backgroundColor: 'rgba(22, 93, 255, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: '消息数',
-                            data: [8500, 9200, 9800, 10500, 11200, 8800, 7500],
-                            borderColor: '#FFAB00',
-                            backgroundColor: 'rgba(255, 171, 0, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }
-                    ]
-                },
-                month: {
-                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
-                    datasets: [
-                        {
-                            label: '总用户数',
-                            data: [9850, 10500, 11240, 11890, 12350, 12543],
-                            borderColor: '#165DFF',
-                            backgroundColor: 'rgba(22, 93, 255, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: '活跃用户数',
-                            data: [2100, 2350, 2500, 2800, 3050, 3245],
-                            borderColor: '#FFAB00',
-                            backgroundColor: 'rgba(255, 171, 0, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }
-                    ]
+                conversion: {
+                    [period]: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: '活跃用户占比',
+                                data: activeUserRate,
+                                backgroundColor: '#36D399',
+                                borderRadius: 4
+                            },
+                            {
+                                label: '购买意图占比',
+                                data: purchaseUserRate,
+                                backgroundColor: '#165DFF',
+                                borderRadius: 4
+                            }
+                        ]
+                    }
                 }
-            },
-            conversion: {
-                day: {
-                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-                    datasets: [
-                        {
-                            label: '活跃转化率',
-                            data: [0.23, 0.21, 0.25, 0.28, 0.26, 0.30],
-                            backgroundColor: '#36D399',
-                            borderRadius: 4
-                        },
-                        {
-                            label: '购买转化率',
-                            data: [0.09, 0.08, 0.11, 0.13, 0.12, 0.14],
-                            backgroundColor: '#165DFF',
-                            borderRadius: 4
-                        }
-                    ]
-                },
-                week: {
-                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-                    datasets: [
-                        {
-                            label: '活跃转化率',
-                            data: [0.22, 0.23, 0.24, 0.25, 0.26, 0.28, 0.27],
-                            backgroundColor: '#36D399',
-                            borderRadius: 4
-                        },
-                        {
-                            label: '购买转化率',
-                            data: [0.10, 0.11, 0.12, 0.11, 0.13, 0.15, 0.14],
-                            backgroundColor: '#165DFF',
-                            borderRadius: 4
-                        }
-                    ]
-                },
-                month: {
-                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
-                    datasets: [
-                        {
-                            label: '活跃用户占比',
-                            data: [0.213, 0.224, 0.222, 0.236, 0.247, 0.259],
-                            backgroundColor: '#36D399',
-                            borderRadius: 4
-                        },
-                        {
-                            label: '购买意图占比',
-                            data: [0.075, 0.082, 0.088, 0.093, 0.097, 0.10],
-                            backgroundColor: '#165DFF',
-                            borderRadius: 4
-                        }
-                    ]
-                }
-            }
-        };
+            };
+        }
+        
+        // 初始化转换数据
+        chartData = convertTrendToChartData(chartData);
 
         // 数字动画函数
         function animateValue(id, start, end, duration) {
@@ -505,10 +427,11 @@
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const value = Math.floor(progress * (end - start) + start);
+                // const value = Math.floor(progress * (end - start) + start);
+                const value = progress * (end - start) + start;
 
                 if (id.includes('rate')) {
-                    obj.innerText = (value / 100).toFixed(2) + '%';
+                    obj.innerText = (value).toFixed(2) + '%';
                 } else if (id.includes('avg')) {
                     obj.innerText = value.toFixed(2);
                 } else {
@@ -550,10 +473,16 @@
                     usageChart.destroy();
                 }
 
-                const data = chartData.usage[period];
+                // 修改：根据period获取数据
+                let chartDataToUse = chartData.usage[period];
+                if (!chartDataToUse) {
+                    // 如果当前period没有数据，使用默认数据
+                    chartDataToUse = chartData.usage.month;
+                }
+
                 usageChart = new Chart(ctx, {
                     type: 'line',
-                    data: data,
+                    data: chartDataToUse,
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
@@ -598,10 +527,16 @@
                     conversionChart.destroy();
                 }
 
-                const data = chartData.conversion[period];
+                // 修改：根据period获取数据
+                let chartDataToUse = chartData.conversion[period];
+                if (!chartDataToUse) {
+                    // 如果当前period没有数据，使用默认数据
+                    chartDataToUse = chartData.conversion.month;
+                }
+
                 conversionChart = new Chart(ctx, {
                     type: 'bar',
-                    data: data,
+                    data: chartDataToUse,
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
@@ -650,29 +585,69 @@
             initUsageChart();
             initConversionChart();
 
-            // 时间段切换事件
+            // 修改：时间段切换事件
             document.querySelectorAll('#usageChartPeriod .period-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', async function() {
                     const period = this.getAttribute('data-period');
+                    
+                    // 更新按钮样式
                     document.querySelectorAll('#usageChartPeriod .period-btn').forEach(b => {
                         b.classList.remove('bg-primary', 'text-white');
                         b.classList.add('bg-gray-100', 'text-gray-600');
                     });
                     this.classList.remove('bg-gray-100', 'text-gray-600');
                     this.classList.add('bg-primary', 'text-white');
+                    
+                    // 如果需要的时间段数据不存在，发起API请求获取
+                    if (!chartData.usage[period]) {
+                        try {
+                            const response = await fetch(`/api/v1/overview/trend?period=${period}`);
+                            if (response.ok) {
+                                const trendData = await response.json();
+                                // 转换并合并新数据
+                                const newChartData = convertTrendToChartData(trendData, period);
+                                chartData.usage[period] = newChartData.usage[period];
+                                chartData.conversion[period] = newChartData.conversion[period];
+                            }
+                        } catch (error) {
+                            console.error('获取趋势数据失败:', error);
+                        }
+                    }
+                    
+                    // 初始化图表
                     initUsageChart(period);
                 });
             });
 
             document.querySelectorAll('#conversionChartPeriod .period-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', async function() {
                     const period = this.getAttribute('data-period');
+                    
+                    // 更新按钮样式
                     document.querySelectorAll('#conversionChartPeriod .period-btn').forEach(b => {
                         b.classList.remove('bg-primary', 'text-white');
                         b.classList.add('bg-gray-100', 'text-gray-600');
                     });
                     this.classList.remove('bg-gray-100', 'text-gray-600');
                     this.classList.add('bg-primary', 'text-white');
+                    
+                    // 如果需要的时间段数据不存在，发起API请求获取
+                    if (!chartData.conversion[period]) {
+                        try {
+                            const response = await fetch(`/api/v1/overview/trend?period=${period}`);
+                            if (response.ok) {
+                                const trendData = await response.json();
+                                // 转换并合并新数据
+                                const newChartData = convertTrendToChartData(trendData, period);
+                                chartData.usage[period] = newChartData.usage[period];
+                                chartData.conversion[period] = newChartData.conversion[period];
+                            }
+                        } catch (error) {
+                            console.error('获取趋势数据失败:', error);
+                        }
+                    }
+                    
+                    // 初始化图表
                     initConversionChart(period);
                 });
             });
@@ -687,7 +662,74 @@
                     this.classList.remove('shadow-card-hover', '-translate-y-1');
                 });
             });
+        // 导出数据为CSV
+        document.getElementById('export-btn').addEventListener('click', function () {
+            const headers = ['指标名称', '指标值', '较上月'];
+            const rows = [];
+            document.querySelectorAll('table tbody tr').forEach(tr => {
+                const tds = tr.querySelectorAll('td');
+                if (tds.length >= 3) {
+                    const name = tds[0].innerText.trim().replace(/\\s+/g, ' ');
+                    const value = tds[1].innerText.trim();
+                    const mom = tds[2].innerText.trim();
+                    rows.push([name, value, mom]);
+                }
+            });
+            let csvContent = headers.join(',') + '\\n';
+            rows.forEach(row => {
+                csvContent += row.map(cell => '\"' + cell.replace(/\"/g, '\"\"') + '\"').join(',') + '\\n';
+            });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '数据概览.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         });
+        fetch('/api/v1/overview/mom')
+      .then(res => res.json())
+      .then(momData => {
+        // 字段名与后端返回一致
+        const mapping = {
+            total_users: 'mom_total_users',
+            total_chats: 'mom_total_chats',
+            ai_replies: 'mom_ai_replies',
+            active_users: 'mom_active_users',
+            received_users: 'mom_received_users',
+            read_rate: 'mom_read_rate',
+            purchase_users: 'mom_purchase_users',
+            ai_reply_rate: 'mom_ai_reply_rate',
+            active_user_rate: 'mom_active_user_rate',
+            received_active_rate: 'mom_received_active_rate',
+            purchase_user_rate: 'mom_purchase_user_rate',
+            purchase_active_rate: 'mom_purchase_active_rate',
+            avg_chat_per_active_user: 'mom_avg_chat_per_active_user'
+        };
+        for (const key in mapping) {
+          const el = document.getElementById(mapping[key]);
+          if (el && momData[key] !== undefined) {
+            // 百分比显示，保留一位小数
+            let percent = (momData[key] * 100).toFixed(1) + '%';
+            // 判断正负，决定箭头方向和颜色
+            if (momData[key] > 0) {
+              el.innerHTML = `<i class="fa-solid fa-arrow-up mr-1"></i> ${percent}`;
+              el.classList.add('text-secondary');
+              el.classList.remove('text-danger');
+            } else if (momData[key] < 0) {
+              el.innerHTML = `<i class="fa-solid fa-arrow-down mr-1"></i> ${percent}`;
+              el.classList.add('text-danger');
+              el.classList.remove('text-secondary');
+            } else {
+              el.innerHTML = `<i class="fa-solid fa-minus mr-1"></i> 0.0%`;
+              el.classList.remove('text-secondary', 'text-danger');
+            }
+          }
+        }
+      });
+    });
     </script>
 </body>
 </html>
