@@ -1,5 +1,6 @@
 # After the user connects, a message is sent to the user based on the user's message or the first time
 import random
+import emoji
 from typing import Type
 
 from sqlmodel import select
@@ -8,6 +9,19 @@ from app.db.session import async_session_maker
 from app.models import Chat, User
 from app.scripts.chat import Chat as ChatScript
 from app.scripts.producer import Producer
+
+
+EMOJI_LIST = [
+    ":grinning_face:",
+    ":grinning_face_with_big_eyes:",
+    ":grinning_face_with_smiling_eyes:",
+    ":grinning_face_with_sweat:",
+    ":rolling_on_the_floor_laughing:",
+    ":melting_face:",
+    ":winking_face:",
+    ":star_struck:",
+    ":smiling_face_with_hearts:",
+]
 
 
 async def get_history(user_id: int, is_read: bool = False):
@@ -44,7 +58,8 @@ async def reply_message(user: Type[User] | None):
     history = await get_history(user.id)
     if not history:
         # toDo 首次打招呼 推荐TG平台发送随机的表情包，暂未实现，随机调用hello or hi
-        message = random.choice(["Hello", "Hi"])
+        # message = random.choice(["Hello", "Hi"])
+        message = emoji.emojize(random.choice(EMOJI_LIST))
         await save_chat(
             user.id, "assistant", message, True
         )
