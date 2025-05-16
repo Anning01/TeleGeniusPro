@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据概览仪表盘</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36D399',
+                        warning: '#FFAB00',
+                        danger: '#FF5630',
+                        info: '#00B8D9',
+                        dark: '#1D2939',
+                        'dark-light': '#344054',
+                        'gray-light': '#F9FAFB',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+                    }
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-transition {
+                transition: all 0.3s ease;
+            }
+            .number-animation {
+                transition: all 1s ease-out;
+            }
+            .grid-dashboard {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-dark min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 页面标题 -->
+        <header class="mb-8">
+            <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-dark">数据概览仪表盘</h1>
+            <p class="text-gray-500 mt-2">实时展示系统核心指标和用户行为数据</p>
+        </header>
+
+        <!-- 数据概览卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- 总用户数 -->
+            <div class="bg-white rounded-xl shadow-card p-6 card-transition hover:shadow-card-hover transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">总用户数</p>
+                        <h3 class="text-3xl font-bold mt-1 number-animation" id="total_users">0</h3>
+                    </div>
+                    <div class="bg-primary/10 p-3 rounded-lg">
+                        <i class="fa-solid fa-users text-primary text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-secondary text-sm font-medium flex items-center">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 12.5%
+                    </span>
+                    <span class="text-gray-400 text-sm ml-2">较上月</span>
+                </div>
+            </div>
+
+            <!-- 总聊天数 -->
+            <div class="bg-white rounded-xl shadow-card p-6 card-transition hover:shadow-card-hover transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">总聊天数</p>
+                        <h3 class="text-3xl font-bold mt-1 number-animation" id="total_chats">0</h3>
+                    </div>
+                    <div class="bg-info/10 p-3 rounded-lg">
+                        <i class="fa-solid fa-comments text-info text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-secondary text-sm font-medium flex items-center">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 8.2%
+                    </span>
+                    <span class="text-gray-400 text-sm ml-2">较上月</span>
+                </div>
+            </div>
+
+            <!-- AI回复数 -->
+            <div class="bg-white rounded-xl shadow-card p-6 card-transition hover:shadow-card-hover transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">AI回复数</p>
+                        <h3 class="text-3xl font-bold mt-1 number-animation" id="ai_replies">0</h3>
+                    </div>
+                    <div class="bg-secondary/10 p-3 rounded-lg">
+                        <i class="fa-solid fa-robot text-secondary text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-secondary text-sm font-medium flex items-center">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 15.3%
+                    </span>
+                    <span class="text-gray-400 text-sm ml-2">较上月</span>
+                </div>
+            </div>
+
+            <!-- 当前活跃用户数 -->
+            <div class="bg-white rounded-xl shadow-card p-6 card-transition hover:shadow-card-hover transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">当前活跃用户数</p>
+                        <h3 class="text-3xl font-bold mt-1 number-animation" id="active_users">0</h3>
+                    </div>
+                    <div class="bg-warning/10 p-3 rounded-lg">
+                        <i class="fa-solid fa-user-check text-warning text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-secondary text-sm font-medium flex items-center">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 23.1%
+                    </span>
+                    <span class="text-gray-400 text-sm ml-2">较上月</span>
+                </div>
+            </div>
+
+            <!-- AI已接待用户数 -->
+            <div class="bg-white rounded-xl shadow-card p-6 card-transition hover:shadow-card-hover transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">AI已接待用户数</p>
+                        <h3 class="text-3xl font-bold mt-1 number-animation" id="received_users">0</h3>
+                    </div>
+                    <div class="bg-primary/10 p-3 rounded-lg">
+                        <i class="fa-solid fa-headphones text-primary text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-secondary text-sm font-medium flex items-center">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 18.7%
+                    </span>
+                    <span class="text-gray-400 text-sm ml-2">较上月</span>
+                </div>
+            </div>
+
+            <!-- 有购买意图用户数 -->
+            <div class="bg-white rounded-xl shadow-card p-6 card-transition hover:shadow-card-hover transform hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-medium">有购买意图用户数</p>
+                        <h3 class="text-3xl font-bold mt-1 number-animation" id="purchase_users">0</h3>
+                    </div>
+                    <div class="bg-danger/10 p-3 rounded-lg">
+                        <i class="fa-solid fa-shopping-cart text-danger text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <span class="text-secondary text-sm font-medium flex items-center">
+                        <i class="fa-solid fa-arrow-up mr-1"></i> 10.4%
+                    </span>
+                    <span class="text-gray-400 text-sm ml-2">较上月</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- 使用率统计图表 -->
+            <div class="bg-white rounded-xl shadow-card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold">使用率统计</h2>
+                    <div class="flex space-x-2" id="usageChartPeriod">
+                        <button class="period-btn px-3 py-1 text-sm bg-primary text-white rounded-lg" data-period="day">日</button>
+                        <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="week">周</button>
+                        <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="month">月</button>
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="usageChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 用户转化率图表 -->
+            <div class="bg-white rounded-xl shadow-card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold">用户转化率</h2>
+                    <div class="flex space-x-2" id="conversionChartPeriod">
+                        <button class="period-btn px-3 py-1 text-sm bg-primary text-white rounded-lg" data-period="day">日</button>
+                        <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="week">周</button>
+                        <button class="period-btn px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg" data-period="month">月</button>
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="conversionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据详情表格 -->
+        <div class="bg-white rounded-xl shadow-card p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">详细数据指标</h2>
+                <button class="px-4 py-2 bg-primary text-white rounded-lg flex items-center card-transition hover:bg-primary/90">
+                    <i class="fa-solid fa-download mr-2"></i>导出数据
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">指标名称</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">指标值</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">较上月</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="bg-primary/10 p-2 rounded mr-3">
+                                        <i class="fa-solid fa-file-text text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">消息阅读率</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" id="read_rate">0%</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 5.2%</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="bg-secondary/10 p-2 rounded mr-3">
+                                        <i class="fa-solid fa-user-circle text-secondary"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">活跃用户占比</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" id="active_user_rate">0%</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 3.7%</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="bg-warning/10 p-2 rounded mr-3">
+                                        <i class="fa-solid fa-headphones text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">AI接待率</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" id="received_active_rate">0%</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 2.1%</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="bg-info/10 p-2 rounded mr-3">
+                                        <i class="fa-solid fa-robot text-info"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">AI回复占总消息比例</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" id="ai_reply_rate">0%</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 4.3%</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="bg-primary/10 p-2 rounded mr-3">
+                                        <i class="fa-solid fa-comments text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">平均每活跃用户聊天数目</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" id="avg_chat_per_active_user">0</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 1.8</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="bg-danger/10 p-2 rounded mr-3">
+                                        <i class="fa-solid fa-shopping-cart text-danger"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">购买意图/总用户占比</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" id="purchase_user_rate">0%</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 2.5%</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="bg-secondary/10 p-2 rounded mr-3">
+                                        <i class="fa-solid fa-percentage text-secondary"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">购买意图/活跃用户占比</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900" id="purchase_active_rate">0%</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <span class="text-secondary flex items-center"><i class="fa-solid fa-arrow-up mr-1"></i> 3.2%</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据
+        const data = {
+            total_users: 12543,
+            total_chats: 56892,
+            ai_replies: 42567,
+            active_users: 3245,
+            received_users: 2856,
+            purchase_users: 1254,
+            read_rate: 0.875,
+            active_user_rate: 0.259,
+            received_active_rate: 0.88,
+            ai_reply_rate: 0.748,
+            avg_chat_per_active_user: 17.53,
+            purchase_user_rate: 0.10,
+            purchase_active_rate: 0.386
+        };
+
+        // 图表数据
+        const chartData = {
+            usage: {
+                day: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                    datasets: [
+                        {
+                            label: '活跃用户数',
+                            data: [850, 720, 1500, 2100, 1800, 2500],
+                            borderColor: '#165DFF',
+                            backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: '消息数',
+                            data: [1200, 950, 3200, 4500, 3800, 4200],
+                            borderColor: '#FFAB00',
+                            backgroundColor: 'rgba(255, 171, 0, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                week: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [
+                        {
+                            label: '活跃用户数',
+                            data: [2100, 2350, 2500, 2800, 3050, 2400, 1800],
+                            borderColor: '#165DFF',
+                            backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: '消息数',
+                            data: [8500, 9200, 9800, 10500, 11200, 8800, 7500],
+                            borderColor: '#FFAB00',
+                            backgroundColor: 'rgba(255, 171, 0, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                month: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    datasets: [
+                        {
+                            label: '总用户数',
+                            data: [9850, 10500, 11240, 11890, 12350, 12543],
+                            borderColor: '#165DFF',
+                            backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: '活跃用户数',
+                            data: [2100, 2350, 2500, 2800, 3050, 3245],
+                            borderColor: '#FFAB00',
+                            backgroundColor: 'rgba(255, 171, 0, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                }
+            },
+            conversion: {
+                day: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                    datasets: [
+                        {
+                            label: '活跃转化率',
+                            data: [0.23, 0.21, 0.25, 0.28, 0.26, 0.30],
+                            backgroundColor: '#36D399',
+                            borderRadius: 4
+                        },
+                        {
+                            label: '购买转化率',
+                            data: [0.09, 0.08, 0.11, 0.13, 0.12, 0.14],
+                            backgroundColor: '#165DFF',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                week: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [
+                        {
+                            label: '活跃转化率',
+                            data: [0.22, 0.23, 0.24, 0.25, 0.26, 0.28, 0.27],
+                            backgroundColor: '#36D399',
+                            borderRadius: 4
+                        },
+                        {
+                            label: '购买转化率',
+                            data: [0.10, 0.11, 0.12, 0.11, 0.13, 0.15, 0.14],
+                            backgroundColor: '#165DFF',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                month: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    datasets: [
+                        {
+                            label: '活跃用户占比',
+                            data: [0.213, 0.224, 0.222, 0.236, 0.247, 0.259],
+                            backgroundColor: '#36D399',
+                            borderRadius: 4
+                        },
+                        {
+                            label: '购买意图占比',
+                            data: [0.075, 0.082, 0.088, 0.093, 0.097, 0.10],
+                            backgroundColor: '#165DFF',
+                            borderRadius: 4
+                        }
+                    ]
+                }
+            }
+        };
+
+        // 数字动画函数
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            const suffix = obj.innerText.replace(/[0-9,.]/g, '');
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+
+                if (id.includes('rate')) {
+                    obj.innerText = (value / 100).toFixed(2) + '%';
+                } else if (id.includes('avg')) {
+                    obj.innerText = value.toFixed(2);
+                } else {
+                    obj.innerText = value.toLocaleString() + suffix;
+                }
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 填充数据并添加动画
+            for (const [key, value] of Object.entries(data)) {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (typeof value === 'number') {
+                        if (key.includes('rate')) {
+                            animateValue(key, 0, value * 100, 1500);
+                        } else if (key.includes('avg')) {
+                            animateValue(key, 0, value, 1500);
+                        } else {
+                            animateValue(key, 0, value, 1500);
+                        }
+                    } else {
+                        element.innerText = value;
+                    }
+                }
+            }
+
+            // 使用率统计图表
+            let usageChart;
+            function initUsageChart(period = 'month') {
+                const ctx = document.getElementById('usageChart').getContext('2d');
+                if (usageChart) {
+                    usageChart.destroy();
+                }
+
+                const data = chartData.usage[period];
+                usageChart = new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    drawBorder: false,
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        animations: {
+                            tension: {
+                                duration: 1000,
+                                easing: 'linear'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 用户转化率图表
+            let conversionChart;
+            function initConversionChart(period = 'month') {
+                const ctx = document.getElementById('conversionChart').getContext('2d');
+                if (conversionChart) {
+                    conversionChart.destroy();
+                }
+
+                const data = chartData.conversion[period];
+                conversionChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + (context.raw * 100).toFixed(2) + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value * 100 + '%';
+                                    }
+                                },
+                                grid: {
+                                    drawBorder: false,
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        animations: {
+                            y: {
+                                duration: 1000,
+                                easing: 'easeOutQuart'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 初始化图表
+            initUsageChart();
+            initConversionChart();
+
+            // 时间段切换事件
+            document.querySelectorAll('#usageChartPeriod .period-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const period = this.getAttribute('data-period');
+                    document.querySelectorAll('#usageChartPeriod .period-btn').forEach(b => {
+                        b.classList.remove('bg-primary', 'text-white');
+                        b.classList.add('bg-gray-100', 'text-gray-600');
+                    });
+                    this.classList.remove('bg-gray-100', 'text-gray-600');
+                    this.classList.add('bg-primary', 'text-white');
+                    initUsageChart(period);
+                });
+            });
+
+            document.querySelectorAll('#conversionChartPeriod .period-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const period = this.getAttribute('data-period');
+                    document.querySelectorAll('#conversionChartPeriod .period-btn').forEach(b => {
+                        b.classList.remove('bg-primary', 'text-white');
+                        b.classList.add('bg-gray-100', 'text-gray-600');
+                    });
+                    this.classList.remove('bg-gray-100', 'text-gray-600');
+                    this.classList.add('bg-primary', 'text-white');
+                    initConversionChart(period);
+                });
+            });
+
+            // 添加卡片悬停效果
+            const cards = document.querySelectorAll('.card-transition');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.classList.add('shadow-card-hover', '-translate-y-1');
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.classList.remove('shadow-card-hover', '-translate-y-1');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
